@@ -1,0 +1,996 @@
+/* ==========================================================================
+   FARMAHAWK ABOUT PAGE — CLEAN, PROFESSIONAL AGRI-TECH SAAS DESIGN
+   Matches existing FarmHawk Dashboard & Community pages with refined elegance
+   ========================================================================== */
+
+/* Overall Page Root Container */
+.about-page-container {
+  min-height: 100vh;
+  width: 100vw;
+  background-color: #f4f6f8;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: #1f2937;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Main Content Area */
+.about-main-content {
+  padding: 32px;
+  max-width: 1240px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* --------------------------------------------------------------------------
+   Hero Card
+   -------------------------------------------------------------------------- */
+.about-hero-card {
+  position: relative;
+  border-radius: 18px;
+  min-height: 280px;
+  overflow: hidden;
+  box-shadow: 0 12px 28px rgba(21, 76, 43, 0.2);
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(21, 76, 43, 0.25);
+  background-color: #154c2b;
+}
+
+.about-hero-bg-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 25%;
+  z-index: 1;
+}
+
+.about-hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(14, 52, 28, 0.96) 0%,
+    rgba(18, 68, 37, 0.90) 45%,
+    rgba(15, 60, 32, 0.65) 100%
+  );
+  z-index: 2;
+}
+
+.hero-content-wrapper {
+  position: relative;
+  z-index: 3;
+  padding: 42px 40px;
+  max-width: 860px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.about-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: rgba(255, 255, 255, 0.15);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: #ffffff;
+}
+
+.about-hero-title {
+  margin: 0;
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #ffffff;
+}
+
+.about-hero-subtitle {
+  margin: 0;
+  font-size: 18px;
+  color: #e2f0d9;
+  line-height: 1.55;
+  font-weight: 500;
+}
+
+.hero-highlights-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.hero-highlight-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 5px 12px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.hero-highlight-pill svg {
+  color: #86efac;
+}
+
+/* --------------------------------------------------------------------------
+   Quick Topic Navigation Panel (Sticky Bar)
+   -------------------------------------------------------------------------- */
+.about-topic-nav-panel {
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 12px 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: sticky;
+  top: 84px;
+  z-index: 40;
+  transition: all 0.2s ease;
+}
+
+.topic-nav-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.topic-compass-icon {
+  color: #15803d;
+}
+
+.topic-nav-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #15803d;
+}
+
+.topic-chips-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 900px) {
+  .topic-chips-wrapper {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+.topic-chip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  padding: 7px 14px;
+  border-radius: 20px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.topic-chip-btn:hover {
+  background-color: #e2e8f0;
+  color: #0f172a;
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+}
+
+.topic-chip-btn.active {
+  background-color: #154c2b;
+  color: #ffffff;
+  border-color: #154c2b;
+  box-shadow: 0 3px 10px rgba(21, 76, 43, 0.25);
+  font-weight: 700;
+}
+
+.topic-chip-btn.active svg {
+  color: #86efac;
+}
+
+/* --------------------------------------------------------------------------
+   Generic Section Card
+   -------------------------------------------------------------------------- */
+.about-section-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 32px 36px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  scroll-margin-top: 175px;
+}
+
+.section-header-block {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.section-icon-badge {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.section-icon-badge.green {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.section-icon-badge.blue {
+  background-color: #e0f2fe;
+  color: #0284c7;
+}
+
+.section-icon-badge.orange {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.section-icon-badge.purple {
+  background-color: #f3e8ff;
+  color: #7e22ce;
+}
+
+.section-title-text {
+  margin: 0;
+  font-size: 23px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.section-subtitle-text {
+  font-size: 14px;
+  color: #64748b;
+  margin-top: 2px;
+  display: block;
+}
+
+/* --------------------------------------------------------------------------
+   Section 1: Overview Grid (What is FarmHawk)
+   -------------------------------------------------------------------------- */
+.about-overview-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 32px;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .about-overview-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.overview-text-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 16px;
+  line-height: 1.7;
+  color: #334155;
+}
+
+.overview-text-col p {
+  margin: 0;
+}
+
+.overview-points-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.point-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px 18px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.point-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.point-icon.green {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.point-icon.blue {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+
+.point-icon.purple {
+  background: #f3e8ff;
+  color: #7e22ce;
+}
+
+.point-card strong {
+  font-size: 15px;
+  color: #0f172a;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.point-card p {
+  margin: 0;
+  font-size: 13.5px;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+/* --------------------------------------------------------------------------
+   Section 2: Features Grid (What We Do)
+   -------------------------------------------------------------------------- */
+.about-features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 1024px) {
+  .about-features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .about-features-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.about-feature-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.about-feature-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  border-color: #cbd5e1;
+  background: #ffffff;
+}
+
+.feat-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.feat-icon-wrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+}
+
+.feat-tag-chip {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #64748b;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.feat-title {
+  margin: 0;
+  font-size: 17.5px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.feat-desc {
+  margin: 0;
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.55;
+}
+
+/* --------------------------------------------------------------------------
+   Section 3: Workflow Container (Process Flows)
+   -------------------------------------------------------------------------- */
+.workflow-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.workflow-block-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.workflow-badge {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.workflow-badge.green {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.workflow-badge.blue {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+
+.workflow-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.workflow-steps-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 10px 0;
+}
+
+.workflow-step-box {
+  flex: 1;
+  min-width: 150px;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+}
+
+.workflow-step-box.highlight {
+  background: #f0fdf4;
+  border-color: #86efac;
+}
+
+.step-num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #154c2b;
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step-num.highlight {
+  background: #15803d;
+}
+
+.step-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.step-desc {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.workflow-arrow {
+  font-size: 20px;
+  font-weight: 800;
+  color: #94a3b8;
+  padding: 0 4px;
+}
+
+@media (max-width: 768px) {
+  .workflow-steps-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .workflow-arrow {
+    text-align: center;
+    transform: rotate(90deg);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Section 4: Krishi Samvad Dedicated Showcase
+   -------------------------------------------------------------------------- */
+.samvad-highlight-card {
+  background: linear-gradient(135deg, #f0fdf4 0%, #e8f9ee 100%);
+  border: 1.5px solid #bbf7d0;
+  scroll-margin-top: 175px;
+}
+
+.samvad-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.samvad-tag {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #15803d;
+  background: #ffffff;
+  padding: 4px 10px;
+  border-radius: 12px;
+  border: 1px solid #86efac;
+}
+
+.samvad-main-heading {
+  margin: 6px 0 2px 0;
+  font-size: 25px;
+  font-weight: 800;
+  color: #14532d;
+}
+
+.samvad-tagline {
+  margin: 0;
+  font-size: 15px;
+  font-style: italic;
+  color: #166534;
+  font-weight: 600;
+}
+
+.btn-samvad-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #15803d;
+  color: #ffffff;
+  padding: 12px 22px;
+  border-radius: 10px;
+  border: none;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(21, 128, 61, 0.22);
+  transition: all 0.2s ease;
+}
+
+.btn-samvad-cta:hover {
+  background: #166534;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(21, 128, 61, 0.3);
+}
+
+.samvad-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 6px;
+}
+
+@media (max-width: 768px) {
+  .samvad-pillars-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pillar-item {
+  background: #ffffff;
+  border: 1px solid #bbf7d0;
+  border-radius: 12px;
+  padding: 18px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.pillar-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #dcfce7;
+  color: #15803d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pillar-item strong {
+  font-size: 15px;
+  color: #14532d;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.pillar-item p {
+  margin: 0;
+  font-size: 13.5px;
+  color: #475569;
+  line-height: 1.5;
+}
+
+/* --------------------------------------------------------------------------
+   Section 5: Government Schemes Grid
+   -------------------------------------------------------------------------- */
+.gov-schemes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 860px) {
+  .gov-schemes-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.gov-scheme-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid #15803d;
+  border-radius: 12px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.gov-scheme-card:hover {
+  transform: translateY(-2px);
+  border-color: #cbd5e1;
+  background: #ffffff;
+}
+
+.scheme-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.scheme-category-badge {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #15803d;
+  background: #dcfce7;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.scheme-ext-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #0284c7;
+  text-decoration: none;
+}
+
+.scheme-ext-link:hover {
+  text-decoration: underline;
+  color: #0369a1;
+}
+
+.scheme-title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.scheme-desc {
+  margin: 0;
+  font-size: 13.5px;
+  color: #475569;
+  line-height: 1.55;
+}
+
+/* --------------------------------------------------------------------------
+   Section 6: Official Government Resources & Disclaimer
+   -------------------------------------------------------------------------- */
+.gov-resources-subblock {
+  margin-top: 12px;
+  padding-top: 24px;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  scroll-margin-top: 175px;
+}
+
+.resources-heading {
+  margin: 0;
+  font-size: 18.5px;
+  font-weight: 800;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.resources-heading svg {
+  color: #15803d;
+}
+
+.official-links-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+@media (max-width: 860px) {
+  .official-links-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+.official-link-row {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.official-link-row:hover {
+  border-color: #15803d;
+  background: #f0fdf4;
+  transform: translateY(-1px);
+}
+
+.link-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.link-name {
+  font-size: 14.5px;
+  color: #0f172a;
+}
+
+.link-desc {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.link-url-text {
+  font-size: 11.5px;
+  color: #0284c7;
+  font-family: monospace;
+}
+
+.link-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #15803d;
+  background: #dcfce7;
+  padding: 6px 10px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+/* Government Disclaimer Box */
+.gov-disclaimer-box {
+  background: #fffbeb;
+  border: 1.5px solid #fde68a;
+  border-radius: 14px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.disclaimer-icon {
+  color: #d97706;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.disclaimer-text strong {
+  font-size: 14.5px;
+  color: #92400e;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.disclaimer-text p {
+  margin: 0;
+  font-size: 13.5px;
+  color: #78350f;
+  line-height: 1.55;
+}
+
+/* --------------------------------------------------------------------------
+   Section 7: Trust & Transparency Section
+   -------------------------------------------------------------------------- */
+.trust-points-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .trust-points-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.trust-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.trust-number {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #154c2b;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.trust-card strong {
+  font-size: 15px;
+  color: #0f172a;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.trust-card p {
+  margin: 0;
+  font-size: 13.5px;
+  color: #64748b;
+  line-height: 1.55;
+}
+
+/* --------------------------------------------------------------------------
+   Section 8: Mission Section
+   -------------------------------------------------------------------------- */
+.about-mission-card {
+  background: linear-gradient(135deg, #154c2b 0%, #0d361d 100%);
+  border-radius: 18px;
+  padding: 44px 36px;
+  color: #ffffff;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(21, 76, 43, 0.2);
+  scroll-margin-top: 175px;
+}
+
+.mission-content-box {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.mission-heart-badge {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #86efac;
+}
+
+.mission-title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.mission-quote {
+  margin: 0;
+  font-size: 19.5px;
+  line-height: 1.6;
+  font-style: italic;
+  color: #f0fdf4;
+  font-weight: 500;
+}
+
+.mission-brand-sign {
+  margin-top: 8px;
+  font-size: 13.5px;
+  color: #86efac;
+  letter-spacing: 0.3px;
+}
+
+.mission-brand-sign strong {
+  color: #ffffff;
+}

@@ -1,0 +1,48 @@
+﻿# Dependencies
+node_modules/
+*/node_modules/
+
+# Python Virtual Environments
+venv/
+*/venv/
+.venv/
+*/.venv/
+env/
+*/env/
+
+# Python Cache
+__pycache__/
+*/__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+
+# Frontend Builds
+dist/
+*/dist/
+build/
+*/build/
+
+# Local Databases & Logs
+*.db
+*.sqlite
+*.sqlite3
+farmhawk.db
+farmhawk_logs.csv
+*/farmhawk_logs.csv
+*.log
+
+# Caches & IDEs
+.cache/
+*/.cache/
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS Generated
+.DS_Store
+._*
+*/._*
+Thumbs.db

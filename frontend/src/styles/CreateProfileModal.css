@@ -1,0 +1,196 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.modal-card {
+  background: #ffffff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 500px;
+  padding: 28px 32px 32px 32px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid #e5e7eb;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.profile-modal-card .modal-header,
+.modal-card:not(.add-field-card) .modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.profile-modal-card .modal-header-title,
+.modal-card:not(.add-field-card) .modal-header-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #1b5e37;
+}
+
+.profile-modal-card .modal-header-title h2,
+.modal-card:not(.add-field-card) .modal-header-title h2 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  color: #1b5e37;
+}
+
+.profile-modal-card .modal-icon,
+.modal-card:not(.add-field-card) .modal-icon {
+  color: #217244;
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.modal-close-btn:hover {
+  color: #1f2937;
+  background-color: #f3f4f6;
+}
+
+.modal-subtitle {
+  color: #4b5563;
+  font-size: 14px;
+  margin: 0 0 20px 0;
+  line-height: 1.4;
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+.form-field label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.form-field input,
+.form-select {
+  width: 100%;
+  padding: 11px 14px;
+  font-size: 15px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background-color: #f9fafb;
+  color: #111827;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.form-select {
+  cursor: pointer;
+  appearance: auto;
+}
+
+.form-field input:focus,
+.form-select:focus {
+  border-color: #217244;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(33, 114, 68, 0.15);
+}
+
+.input-with-loader {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.pincode-spinner {
+  position: absolute;
+  right: 12px;
+  animation: spin 1s linear infinite;
+  color: #217244;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.pincode-status-msg {
+  font-size: 12px;
+  font-weight: 600;
+  color: #166534;
+  margin-top: 2px;
+}
+
+.form-actions {
+  margin-top: 8px;
+}
+
+.save-profile-btn {
+  width: 100%;
+  padding: 13px 16px;
+  background-color: #217244;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.save-profile-btn:hover {
+  background-color: #195834;
+}
+
+.save-profile-btn:active {
+  transform: scale(0.99);
+}
