@@ -5,11 +5,12 @@ import SelectedFieldPage from "./pages/SelectedFieldPage";
 import CommunityPage from "./pages/CommunityPage";
 import NewsPage from "./pages/NewsPage";
 import AboutPage from "./pages/AboutPage";
+import SurveyInsightsPage from "./pages/SurveyInsightsPage";
 import CreateProfileModal from "./components/CreateProfileModal";
 import { loginUserApi } from "./services/api";
 
 export default function App() {
-  // Page states: 'dashboard' | 'field' | 'community' | 'news' | 'about' | 'login'
+  // Page states: 'dashboard' | 'field' | 'community' | 'news' | 'about' | 'survey' | 'login'
   const [currentPage, setCurrentPage] = useState("dashboard");
   const [selectedFieldId, setSelectedFieldId] = useState(null);
   const [activeTab, setActiveTab] = useState("data");
@@ -70,6 +71,10 @@ export default function App() {
       setCurrentPage("about");
       setSelectedFieldId(null);
       window.scrollTo({ top: 0, behavior: "smooth" });
+    } else if (tabName === "survey") {
+      setCurrentPage("survey");
+      setSelectedFieldId(null);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } else if (tabName === "news") {
       setNewsInitialTab("all");
       setCurrentPage("news");
@@ -101,6 +106,16 @@ export default function App() {
           onNavigateHome={() => handleNavigateTab("dashboard")}
           onNavigateNews={handleNavigateNews}
           onNavigateAbout={() => handleNavigateTab("about")}
+          onNavigateSurvey={() => handleNavigateTab("survey")}
+          language={language}
+          onToggleLanguage={toggleLanguage}
+          onLogout={handleLogout}
+        />
+      ) : currentPage === "survey" ? (
+        <SurveyInsightsPage
+          onNavigateHome={() => handleNavigateTab("dashboard")}
+          onNavigateCommunity={() => handleNavigateTab("community")}
+          onNavigateAbout={() => handleNavigateTab("about")}
           language={language}
           onToggleLanguage={toggleLanguage}
           onLogout={handleLogout}
@@ -109,6 +124,7 @@ export default function App() {
         <AboutPage
           onNavigateHome={() => handleNavigateTab("dashboard")}
           onNavigateCommunity={() => handleNavigateTab("community")}
+          onNavigateSurvey={() => handleNavigateTab("survey")}
           language={language}
           onToggleLanguage={toggleLanguage}
           onLogout={handleLogout}
@@ -120,6 +136,7 @@ export default function App() {
           onNavigateHome={() => handleNavigateTab("dashboard")}
           onNavigateCommunity={() => handleNavigateTab("community")}
           onNavigateAbout={() => handleNavigateTab("about")}
+          onNavigateSurvey={() => handleNavigateTab("survey")}
           language={language}
           onToggleLanguage={toggleLanguage}
           onLogout={handleLogout}

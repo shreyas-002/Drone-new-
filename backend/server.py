@@ -29,7 +29,7 @@ from auth import (
     create_access_token,
     get_current_farmer,
 )
-from routes import field_routes, notification_routes, community_routes
+from routes import field_routes, notification_routes, community_routes, survey_routes
 from services.weather_service import fetch_real_weather
 from services.risk_engine import calculate_disease_risk_and_advice
 
@@ -90,6 +90,8 @@ app.mount("/uploads", StaticFiles(directory=UPLOADS_DIR), name="uploads")
 app.include_router(field_routes.router)
 app.include_router(notification_routes.router)
 app.include_router(community_routes.router)
+app.include_router(survey_routes.router)
+
 
 # Ensure CSV log file exists
 if not os.path.exists(CSV_LOG_PATH) or os.path.getsize(CSV_LOG_PATH) == 0:
