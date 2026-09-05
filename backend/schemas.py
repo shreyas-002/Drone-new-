@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional, List
+from typing import Optional, List, Union
 from datetime import datetime
 
 # --- Auth Schemas ---
@@ -72,4 +72,27 @@ class DetectionResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+# --- Survey Schemas ---
+class SurveyResponseCreate(BaseModel):
+    response_id: Optional[str] = None
+    submitted_at: Optional[datetime] = None
+    crops: Optional[Union[List[str], str]] = None
+    farmland_size: Optional[str] = None
+    irrigation: Optional[str] = None
+    operational_challenges: Optional[Union[List[str], str]] = None
+    inspection_difficulty: Optional[Union[int, str]] = None
+    late_discovery_frequency: Optional[str] = None
+    advice_source: Optional[str] = None
+    early_warning_rating: Optional[Union[int, str]] = None
+    pesticide_problems: Optional[Union[List[str], str]] = None
+    drone_spraying_value: Optional[Union[int, str]] = None
+    valuable_features: Optional[Union[List[str], str]] = None
+    krishi_samvad_usefulness: Optional[str] = None
+    preferred_alert_method: Optional[str] = None
+    adoption_concerns: Optional[Union[List[str], str]] = None
+    biggest_problem: Optional[str] = None
+
+
 
