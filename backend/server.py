@@ -105,6 +105,12 @@ print("==================================================")
 print("🚀 REST API & Agricultural Intelligence Engine Ready")
 
 
+from services.climate_monitor import start_autonomous_climate_daemon
+
+@app.on_event("startup")
+async def startup_event():
+    asyncio.create_task(start_autonomous_climate_daemon())
+
 # --- System Health Endpoint ---
 @app.get("/api/health")
 def health_check():
@@ -112,6 +118,7 @@ def health_check():
         "status": "online",
         "service": "FarmHawk Precision Agriculture Backend Server",
         "database": "farmhawk.db (SQLite + SQLAlchemy)",
+        "autonomous_climate_sentinel": "active (24/7 shock monitoring)",
     }
 
 

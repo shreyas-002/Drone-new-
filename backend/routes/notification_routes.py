@@ -234,3 +234,97 @@ def send_single_notification_sms(
         "message": f"SMS dispatched to {phone}"
     }
 
+
+@router.post("/run-auto-sentinel")
+async def trigger_manual_sentinel_scan(
+    force: bool = False,
+    current_farmer: db_models.Farmer = Depends(get_current_farmer)
+):
+    """Trigger an immediate autonomous climate shock scan across all fields."""
+    from services.climate_monitor import evaluate_and_dispatch_farmer_alerts
+    result = await evaluate_and_dispatch_farmer_alerts(force=force)
+    return result
+
+
+class SimulateShockRequest(BaseModel):
+    shock_type: str = "HEAVY_RAIN"  # HEAVY_RAIN, HEATWAVE, FROST_WARNING, FUNGAL_RISK, STORM_WIND
+    field_id: Optional[int] = None
+    custom_phone: Optional[str] = None
+
+
+@router.post("/simulate-shock")
+def simulate_climate_shock(
+    req: SimulateShockRequest,
+    current_farmer: db_models.Farmer = Depends(get_current_farmer),
+    db: Session = Depends(get_db)
+):
+    """Simulate a dummy climate shock (Heavy Rain, Heatwave, Frost, etc.) and dispatch real live alert."""
+    from services.climate_monitor import detect_weather_shocks
+    from services.notification_service import dispatch_bilingual_notification
+
+    # Find field or fallback to first field
+    field = None
+    if req.field_id:
+        field = db.query(db_models.Field).filter(db_models.Field.id == req.field_id).first()
+    if not field:
+        field = db.query(db_models.Field).filter(db_models.Field.farmer_id == current_farmer.id).first()
+
+    field_name = field.field_name if field else "Wheat Field - Block A"
+    crop = field.crop if field else "Wheat (Kanak)"
+    field_id = field.id if field else None
+
+    # Dummy weather scenarios
+    scenarios = {
+        "HEAVY_RAIN": {"temperature": 22.0, "humidity": 94.0, "precipitation": 18.5, "wind_speed": 16.0, "condition": "Heavy Rain & Thunderstorm"},
+        "HEATWAVE": {"temperature": 41.5, "humidity": 28.0, "precipitation": 0.0, "wind_speed": 22.0, "condition": "Severe Heatwave & Dry Winds"},
+        "FROST_WARNING": {"temperature": 1.8, "humidity": 88.0, "precipitation": 0.0, "wind_speed": 4.0, "condition": "Dense Fog & Ground Frost"},
+        "FUNGAL_RISK": {"temperature": 24.0, "humidity": 92.0, "precipitation": 2.0, "wind_speed": 8.0, "condition": "High Humidity & Cloud Cover"},
+        "STORM_WIND": {"temperature": 26.0, "humidity": 65.0, "precipitation": 4.0, "wind_speed": 42.0, "condition": "Severe Squall & Storm Gale"},
+    }
+
+    dummy_weather = scenarios.get(req.shock_type, scenarios["HEAVY_RAIN"])
+    shocks = detect_weather_shocks(dummy_weather, crop)
+
+    if not shocks:
+        raise HTTPException(status_code=400, detail="No shock detected for selected scenario")
+
+    target_shock = shocks[0]
+    phone = req.custom_phone or current_farmer.phone or "9981087718"
+    current_farmer.phone = phone
+
+    title = target_shock["title_en"]
+    msg_en = (
+        f"[SIMULATED SHOCK] {target_shock['title_en']}\n"
+        f"Dear {current_farmer.name}, in your field '{field_name}' ({crop}):\n"
+        f"{target_shock['desc_en']}\n"
+        f"📋 Action: {target_shock['action_en']}"
+    )
+    msg_hi = (
+        f"[सिम्युलेटेड टेस्ट] {target_shock['title_hi']}\n"
+        f"प्रिय {current_farmer.name}, आपके खेत '{field_name}' ({crop}) के लिए:\n"
+        f"{target_shock['desc_hi']}\n"
+        f"📋 अनुशंसित उपाय: {target_shock['action_hi']}"
+    )
+
+    res = dispatch_bilingual_notification(
+        db=db,
+        farmer=current_farmer,
+        field_id=field_id,
+        alert_type=req.shock_type,
+        title=title,
+        message_en=msg_en,
+        message_hi=msg_hi,
+        channels=["SMS", "WHATSAPP"],
+        force=True
+    )
+
+    return {
+        "status": "success",
+        "simulated_scenario": req.shock_type,
+        "dummy_weather": dummy_weather,
+        "recipient_phone": phone,
+        "dispatch_result": res
+    }
+
+
+

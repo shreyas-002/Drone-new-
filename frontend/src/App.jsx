@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import SelectedFieldPage from "./pages/SelectedFieldPage";
@@ -11,22 +11,82 @@ import { loginUserApi } from "./services/api";
 
 export default function App() {
   // Page states: 'dashboard' | 'field' | 'community' | 'news' | 'about' | 'survey' | 'login'
-  const [currentPage, setCurrentPage] = useState("dashboard");
-  const [selectedFieldId, setSelectedFieldId] = useState(null);
-  const [activeTab, setActiveTab] = useState("data");
-  const [newsInitialTab, setNewsInitialTab] = useState("all");
-  const [language, setLanguage] = useState("hi");
-
-  // User Profile State
-  const [userProfile, setUserProfile] = useState({
-    name: "Anant",
-    location: "Ludhiana, Punjab",
-    state: "Punjab",
-    district: "Ludhiana",
-    pincode: "141001",
-    phone: "+91 98765 43210",
-    isCreated: true,
+  const [currentPage, setCurrentPage] = useState(() => {
+    return localStorage.getItem("farmhawk_current_page") || "dashboard";
   });
+
+  const [selectedFieldId, setSelectedFieldId] = useState(() => {
+    const saved = localStorage.getItem("farmhawk_selected_field_id");
+    return saved ? Number(saved) : null;
+  });
+
+  const [activeTab, setActiveTab] = useState(() => {
+    return localStorage.getItem("farmhawk_active_tab") || "data";
+  });
+
+  const [newsInitialTab, setNewsInitialTab] = useState(() => {
+    return localStorage.getItem("farmhawk_news_tab") || "all";
+  });
+
+  const [language, setLanguage] = useState(() => {
+    return localStorage.getItem("farmhawk_language") || "hi";
+  });
+
+  // User Profile State with local storage persistence
+  const [userProfile, setUserProfile] = useState(() => {
+    const saved = localStorage.getItem("farmhawk_user_profile");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        if (parsed && typeof parsed === "object") {
+          return parsed;
+        }
+      } catch (e) {}
+    }
+    return {
+      name: "",
+      location: "",
+      state: "",
+      district: "",
+      pincode: "",
+      phone: "+91 9981087718",
+      phone: "",
+      isCreated: false,
+    };
+  });
+
+  // Persist navigation & preferences to localStorage
+  useEffect(() => {
+    localStorage.setItem("farmhawk_current_page", currentPage);
+  }, [currentPage]);
+
+  useEffect(() => {
+    if (selectedFieldId !== null && selectedFieldId !== undefined) {
+      localStorage.setItem(
+        "farmhawk_selected_field_id",
+        String(selectedFieldId),
+      );
+    } else {
+      localStorage.removeItem("farmhawk_selected_field_id");
+    }
+  }, [selectedFieldId]);
+
+  useEffect(() => {
+    localStorage.setItem("farmhawk_active_tab", activeTab);
+  }, [activeTab]);
+
+  useEffect(() => {
+    localStorage.setItem("farmhawk_news_tab", newsInitialTab);
+  }, [newsInitialTab]);
+
+  useEffect(() => {
+    localStorage.setItem("farmhawk_language", language);
+  }, [language]);
+
+  useEffect(() => {
+    localStorage.setItem("farmhawk_user_profile", JSON.stringify(userProfile));
+  }, [userProfile]);
 
   // Profile modal control
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -46,6 +106,7 @@ export default function App() {
   const handleLogout = () => {
     setCurrentPage("login");
     setSelectedFieldId(null);
+    localStorage.removeItem("farmhawk_selected_field_id");
   };
 
   const toggleLanguage = () => {

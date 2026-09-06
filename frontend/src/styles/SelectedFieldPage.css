@@ -886,220 +886,385 @@
 }
 
 .notifications-history-wrapper {
-  margin-top: 20px;
+  margin-top: 24px;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 20px;
 }
 
-.notif-history-header {
+.history-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
-.notif-history-header h4 {
-  font-size: 15px;
+.history-header h4 {
+  font-size: 16px;
   font-weight: 700;
   color: #1e293b;
   margin: 0;
 }
 
-.refresh-notifs-btn {
-  display: flex;
+.history-refresh-btn {
+  display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  font-size: 12px;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 13px;
   font-weight: 600;
-  background: #f1f5f9;
-  color: #475569;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.refresh-notifs-btn:hover {
-  background: #e2e8f0;
-}
-
-.notifications-log-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.notification-log-item {
   background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-left: 4px solid #16a34a;
-  border-radius: 10px;
-  padding: 14px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
-.notif-item-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.notif-tags {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.channel-badge {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 6px;
-}
-
-.channel-badge.sms {
-  background: #dbeafe;
-  color: #1e40af;
-}
-
-.channel-badge.whatsapp {
-  background: #dcfce7;
-  color: #15803d;
-}
-
-.alert-type-badge {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 6px;
-  text-transform: uppercase;
-}
-
-.alert-type-badge.disease {
-  background: #fee2e2;
-  color: #b91c1c;
-}
-
-.alert-type-badge.pest {
-  background: #fef3c7;
-  color: #b45309;
-}
-
-.alert-type-badge.climate {
-  background: #e0f2fe;
-  color: #0369a1;
-}
-
-.alert-type-badge.test {
-  background: #f3e8ff;
-  color: #7e22ce;
-}
-
-.recipient-tag {
-  font-size: 11px;
-  color: #64748b;
-  font-family: monospace;
-}
-
-.notif-timestamp {
-  font-size: 11px;
-  color: #94a3b8;
-}
-
-.notif-item-title {
-  font-size: 14px;
+.history-refresh-btn:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
   color: #0f172a;
 }
 
-.bilingual-messages-box {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  background: #f8fafc;
-  border: 1px solid #f1f5f9;
-  border-radius: 8px;
-  padding: 10px 12px;
+.history-refresh-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
-@media (max-width: 768px) {
-  .bilingual-messages-box {
-    grid-template-columns: 1fr;
-  }
+.spin-icon {
+  animation: spin 1s linear infinite;
 }
 
-.msg-block {
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.notifs-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 12px;
 }
 
-.lang-label {
-  font-size: 11px;
+.notif-log-item {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid #16a34a;
+  border-radius: 12px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  transition: box-shadow 0.2s ease;
+}
+
+.notif-log-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.notif-log-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.notif-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.notif-type-tag {
+  font-size: 11.5px;
   font-weight: 700;
-  color: #475569;
+  padding: 4px 10px;
+  border-radius: 6px;
+  letter-spacing: 0.02em;
 }
 
-.msg-block p {
-  font-size: 12.5px;
-  color: #334155;
+.notif-type-tag.test {
+  background: #f3e8ff;
+  color: #7e22ce;
+  border: 1px solid #e9d5ff;
+}
+
+.notif-type-tag.disease {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.notif-type-tag.pest {
+  background: #fef3c7;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+
+.notif-type-tag.climate {
+  background: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+.notif-phone-badge {
+  font-size: 12px;
+  font-weight: 600;
+  font-family: monospace;
+  color: #475569;
+  background: #f1f5f9;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.notif-time-tag {
+  font-size: 12px;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.notif-body {
+  padding: 2px 0;
+}
+
+.notif-message-text {
+  font-size: 13.5px;
+  color: #1e293b;
+  line-height: 1.55;
   margin: 0;
-  line-height: 1.45;
   white-space: pre-line;
 }
 
-.no-notifs-msg {
-  font-size: 13px;
+.notif-channels-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px dashed #f1f5f9;
+  flex-wrap: wrap;
+}
+
+.channel-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.channel-pill.sms {
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.channel-pill.whatsapp {
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.channel-pill .pill-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+}
+
+.channel-pill strong {
+  font-weight: 700;
+}
+
+.loading-text, .no-notifs-text {
+  font-size: 13.5px;
   color: #64748b;
-  font-style: italic;
-  padding: 20px;
+  padding: 24px;
   text-align: center;
   background: #f8fafc;
-  border-radius: 8px;
+  border-radius: 10px;
+  border: 1px dashed #cbd5e1;
+  margin: 0;
 }
 
 .notif-direct-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px dashed #e2e8f0;
+  gap: 8px;
+  margin-left: auto;
 }
 
 .direct-action-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
+  padding: 5px 12px;
   font-size: 12px;
   font-weight: 600;
   border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s;
   text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .wa-direct-btn {
   background: #22c55e;
-  color: white;
+  color: #ffffff;
 }
 
 .wa-direct-btn:hover {
   background: #16a34a;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(22, 163, 74, 0.25);
+  color: #ffffff;
 }
 
 .sms-direct-btn {
-  background: #3b82f6;
-  color: white;
+  background: #0284c7;
+  color: #ffffff;
 }
 
-.sms-direct-btn:hover {
-  background: #2563eb;
+.sms-direct-btn:hover:not(:disabled) {
+  background: #0369a1;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(2, 132, 199, 0.25);
+  color: #ffffff;
 }
 
-.rec-monitor {
-  font-size: 13px;
-  color: #4b5563;
-  padding-left: 24px;
+.sms-direct-btn.sent {
+  background: #16a34a !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 5px rgba(22, 163, 74, 0.25);
 }
+
+.direct-action-btn:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+/* --------------------------------------------------------------------------
+   Simulated Climate Shocks Test Toolbar
+   -------------------------------------------------------------------------- */
+.sim-shock-test-panel {
+  background: #f8fafc;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.sim-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sim-panel-header strong {
+  font-size: 13.5px;
+  color: #1e293b;
+}
+
+.sim-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: #fef3c7;
+  color: #b45309;
+  border: 1px solid #fde68a;
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-left: auto;
+}
+
+.sim-chips-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sim-chip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 7px 13px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  background: #ffffff;
+}
+
+.sim-chip-btn.rain {
+  color: #0284c7;
+  border-color: #bae6fd;
+  background: #f0f9ff;
+}
+.sim-chip-btn.rain:hover:not(:disabled) {
+  background: #0284c7;
+  color: #ffffff;
+}
+
+.sim-chip-btn.heat {
+  color: #d97706;
+  border-color: #fde68a;
+  background: #fffbeb;
+}
+.sim-chip-btn.heat:hover:not(:disabled) {
+  background: #d97706;
+  color: #ffffff;
+}
+
+.sim-chip-btn.frost {
+  color: #475569;
+  border-color: #cbd5e1;
+  background: #f1f5f9;
+}
+.sim-chip-btn.frost:hover:not(:disabled) {
+  background: #475569;
+  color: #ffffff;
+}
+
+.sim-chip-btn.fungal {
+  color: #7c3aed;
+  border-color: #ddd6fe;
+  background: #f5f3ff;
+}
+.sim-chip-btn.fungal:hover:not(:disabled) {
+  background: #7c3aed;
+  color: #ffffff;
+}
+
+.sim-chip-btn.storm {
+  color: #059669;
+  border-color: #a7f3d0;
+  background: #ecfdf5;
+}
+.sim-chip-btn.storm:hover:not(:disabled) {
+  background: #059669;
+  color: #ffffff;
+}
+
+.sim-chip-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.sim-chip-btn.loading {
+  opacity: 0.8;
+  cursor: wait;
+}
+

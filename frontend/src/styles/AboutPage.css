@@ -940,22 +940,65 @@
    Section 8: Mission Section
    -------------------------------------------------------------------------- */
 .about-mission-card {
-  background: linear-gradient(135deg, #154c2b 0%, #0d361d 100%);
-  border-radius: 18px;
-  padding: 44px 36px;
+  position: relative;
+  overflow: hidden;
+  background-color: #154c2b;
+  border-radius: 20px;
+  padding: 54px 36px;
   color: #ffffff;
   text-align: center;
-  box-shadow: 0 10px 25px rgba(21, 76, 43, 0.2);
+  box-shadow: 0 16px 36px rgba(21, 76, 43, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   scroll-margin-top: 175px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mission-bg-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 35%;
+  z-index: 1;
+  filter: saturate(1.1) brightness(0.85);
+  transform: scale(1.02);
+  transition: transform 0.6s ease;
+}
+
+.about-mission-card:hover .mission-bg-img {
+  transform: scale(1.05);
+}
+
+.mission-bg-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at center,
+    rgba(14, 52, 28, 0.88) 0%,
+    rgba(10, 38, 20, 0.95) 75%,
+    rgba(8, 30, 16, 0.98) 100%
+  );
+  backdrop-filter: blur(1.5px);
+  -webkit-backdrop-filter: blur(1.5px);
+  z-index: 2;
 }
 
 .mission-content-box {
-  max-width: 800px;
+  position: relative;
+  z-index: 3;
+  max-width: 860px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
 }
 
 .mission-heart-badge {
@@ -995,3 +1038,179 @@
 .mission-brand-sign strong {
   color: #ffffff;
 }
+
+/* --------------------------------------------------------------------------
+   Farmer Survey & Ground Insights Section
+   -------------------------------------------------------------------------- */
+.survey-highlight-card {
+  border-left: 4px solid #2563eb;
+}
+
+.survey-overview-box {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.survey-intro-text {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.65;
+  color: #334155;
+}
+
+.survey-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 1024px) {
+  .survey-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .survey-metrics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.survey-metric-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.survey-metric-card:hover {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+
+.metric-number {
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.5px;
+}
+
+.metric-number.text-emerald {
+  color: #16a34a;
+}
+
+.metric-number.text-blue {
+  color: #2563eb;
+}
+
+.metric-number.text-amber {
+  color: #d97706;
+}
+
+.metric-number.text-purple {
+  color: #7c3aed;
+}
+
+.metric-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.35;
+}
+
+.metric-desc {
+  margin: 0;
+  font-size: 12.5px;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+.survey-cta-banner {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border: 1.5px solid #bfdbfe;
+  border-radius: 14px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.survey-cta-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 600px;
+}
+
+.survey-cta-text strong {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: #1e3a8a;
+}
+
+.survey-cta-text span {
+  font-size: 13px;
+  color: #3b82f6;
+  line-height: 1.4;
+}
+
+.survey-action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-survey-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+.btn-survey-primary:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+}
+
+.btn-survey-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+  padding: 9px 16px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-survey-secondary:hover {
+  background: #f8fafc;
+  border-color: #93c5fd;
+  transform: translateY(-1px);
+}
+
