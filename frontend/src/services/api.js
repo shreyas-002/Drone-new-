@@ -299,6 +299,26 @@ export async function triggerClimateCheckApi() {
   }
 }
 
+export async function simulateClimateShockApi(shockType, fieldId = null, customPhone = null) {
+  try {
+    const res = await fetch(`${API_BASE_URL}/notifications/simulate-shock`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({
+        shock_type: shockType,
+        field_id: fieldId,
+        custom_phone: customPhone
+      })
+    })
+    if (res.ok) {
+      return await res.json()
+    }
+    return { status: 'error', message: 'Failed to simulate shock' }
+  } catch (err) {
+    return { status: 'error', message: err.message }
+  }
+}
+
 export async function addFieldDetectionApi(fieldId, detectionData) {
   try {
     const res = await fetch(`${API_BASE_URL}/fields/${fieldId}/detections`, {

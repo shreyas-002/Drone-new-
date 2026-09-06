@@ -261,3 +261,57 @@ class AgricultureNews(Base):
     image_url = Column(String, nullable=True)
     tags = Column(String, nullable=True)
     is_verified = Column(Boolean, default=True)
+
+
+class SurveyResponse(Base):
+    __tablename__ = "survey_responses"
+
+    id = Column(Integer, primary_key=True, index=True)
+    response_id = Column(String, unique=True, index=True, nullable=True)
+    submitted_at = Column(DateTime, default=datetime.utcnow)
+
+    # Q1: Crops grown (multi-select JSON)
+    crops = Column(Text, nullable=True)
+
+    # Q2: Farmland size
+    farmland_size = Column(String, nullable=True)
+
+    # Q3: Irrigation source
+    irrigation = Column(String, nullable=True)
+
+    # Q4: Operational challenges (multi-select JSON)
+    operational_challenges = Column(Text, nullable=True)
+
+    # Q5: Crop inspection difficulty
+    inspection_difficulty = Column(String, nullable=True)
+
+    # Q6: Late disease/pest discovery frequency
+    late_discovery_frequency = Column(String, nullable=True)
+
+    # Q7: Farming advice source
+    advice_source = Column(String, nullable=True)
+
+    # Q8: Early warning system usefulness rating (1 to 5)
+    early_warning_rating = Column(Integer, nullable=True)
+
+    # Q9: Pesticide application problems (multi-select JSON)
+    pesticide_problems = Column(Text, nullable=True)
+
+    # Q10: Value of targeted drone spraying services
+    drone_spraying_value = Column(String, nullable=True)
+
+    # Q11: Valuable FarmHawk features (multi-select JSON)
+    valuable_features = Column(Text, nullable=True)
+
+    # Q12: Krishi Samvad usefulness
+    krishi_samvad_usefulness = Column(String, nullable=True)
+
+    # Q13: Preferred alert channel
+    preferred_alert_method = Column(String, nullable=True)
+
+    # Q14: Tech & drone adoption concerns (multi-select JSON)
+    adoption_concerns = Column(Text, nullable=True)
+
+    # Q15: Biggest farming challenge / Farmer's voice
+    biggest_problem = Column(Text, nullable=True)
+

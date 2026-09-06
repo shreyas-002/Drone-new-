@@ -27,14 +27,17 @@ import {
   Award,
   AlertCircle,
   TrendingUp,
+  BarChart3,
 } from "lucide-react";
 import logoImg from "../assets/logo.png";
 import farmerImg from "../assets/farmer.jpg";
+import safeCropImg from "../assets/safe-crop.jpg";
 import "../styles/AboutPage.css";
 
 export default function AboutPage({
   onNavigateHome,
   onNavigateCommunity,
+  onNavigateSurvey,
   language = "hi",
   onToggleLanguage,
   onLogout,
@@ -66,6 +69,12 @@ export default function AboutPage({
       icon: <Users size={15} />,
       label_hi: "कृषि संवाद",
       label_en: "Krishi Samvad",
+    },
+    {
+      id: "farmer-survey",
+      icon: <BarChart3 size={15} />,
+      label_hi: "किसान सर्वेक्षण",
+      label_en: "Farmer Survey",
     },
     {
       id: "gov-schemes",
@@ -186,6 +195,19 @@ export default function AboutPage({
       desc_en:
         "Connect directly with fellow farmers, ask crop queries, share field photos, discuss remedies, and learn practical solutions from real-world farming experiences.",
       accent: "#059669",
+    },
+    {
+      id: "survey",
+      icon: <BarChart3 size={24} />,
+      tag_hi: "जमीनी किसान अनुसंधान",
+      tag_en: "Field Survey & Data",
+      title_hi: "किसान सर्वेक्षण (Farmer Survey)",
+      title_en: "Farmer Survey & Insights",
+      desc_hi:
+        "15-प्रश्नों के फील्ड सर्वेक्षण द्वारा एकत्रित वास्तविक किसानों की प्राथमिकताओं, कीट चुनौतियों और तकनीकी स्वीकार्यता का प्रामाणिक डेटा।",
+      desc_en:
+        "Empirical findings from our 15-question farmer field survey covering crop pest challenges, input economics, and drone technology adoption.",
+      accent: "#2563eb",
     },
     {
       id: "gov",
@@ -337,6 +359,11 @@ export default function AboutPage({
           <button className="header-nav-btn" onClick={onNavigateCommunity}>
             <Users size={18} />
             <span>{isHindi ? "कृषि संवाद" : "Krishi Samvad"}</span>
+          </button>
+
+          <button className="header-nav-btn" onClick={onNavigateSurvey}>
+            <BarChart3 size={18} />
+            <span>{isHindi ? "सर्वे परिणाम" : "Survey Results"}</span>
           </button>
 
           <button
@@ -857,7 +884,147 @@ export default function AboutPage({
           </div>
         </section>
 
-        {/* Section 5: Government Schemes & Policies */}
+        {/* Section 5: Farmer Survey & Ground Research */}
+        <section
+          id="farmer-survey"
+          className="about-section-card survey-highlight-card"
+        >
+          <div className="section-header-block">
+            <div className="section-icon-badge blue">
+              <BarChart3 size={24} />
+            </div>
+            <div>
+              <h2 className="section-title-text">
+                {isHindi
+                  ? "किसान सर्वेक्षण व जमीनी अनुसंधान"
+                  : "Farmer Survey & Ground Insights"}
+              </h2>
+              <span className="section-subtitle-text">
+                {isHindi
+                  ? "15-प्रश्नों के विस्तृत फील्ड अध्ययन पर आधारित लघु व सीमांत किसानों का वास्तविक डेटा व सांख्यिकी"
+                  : "Empirical findings from our 15-question field survey on pest management, climate risks & drone adoption"}
+              </span>
+            </div>
+          </div>
+
+          <div className="survey-overview-box">
+            <p className="survey-intro-text">
+              {isHindi
+                ? "फार्महॉक की रूपरेखा केवल अनुमानों पर नहीं, बल्कि वास्तविक किसानों के साथ किए गए 15-प्रश्नों के विस्तृत जमीनी अनुसंधान (Ground Field Survey) पर आधारित है। इस सर्वेक्षण में किसानों की दैनिक समस्याएं, कीट प्रबंधन की लागत, मौसम के झटके और तकनीकी नवाचार को अपनाने की इच्छा का गहन अध्ययन किया गया है।"
+                : "FarmHawk's architecture is grounded in empirical field research conducted across farming communities through a comprehensive 15-question survey instrument. We analyzed farmers' day-to-day challenges, pesticide expenditure burdens, weather vulnerability, and willingness to adopt precision agricultural tools."}
+            </p>
+
+            {/* 4 Key Research Metrics */}
+            <div className="survey-metrics-grid">
+              <div className="survey-metric-card">
+                <span className="metric-number text-emerald">86%</span>
+                <strong className="metric-label">
+                  {isHindi
+                    ? "लघु व सीमांत किसान (0-5 एकड़)"
+                    : "Small & Marginal Farmers (0-5 Ac)"}
+                </strong>
+                <p className="metric-desc">
+                  {isHindi
+                    ? "सर्वेक्षण में शामिल अधिकांश किसान सीमित भूमि और उच्च इनपुट लागत के दबाव से जूझ रहे हैं।"
+                    : "Respondents predominantly operate smallholdings with heightened sensitivity to crop loss."}
+                </p>
+              </div>
+
+              <div className="survey-metric-card">
+                <span className="metric-number text-blue">60%+</span>
+                <strong className="metric-label">
+                  {isHindi
+                    ? "कीट नियंत्रण व लागत में बचत प्राथमिकता"
+                    : "Pest Control & Cost Savings Priority"}
+                </strong>
+                <p className="metric-desc">
+                  {isHindi
+                    ? "किसान अत्यधिक रासायनिक छिड़काव के बजाय सटीक समय पर लक्षित और किफायती उपचार चाहते हैं।"
+                    : "Farmers demand timely targeted remedies rather than costly indiscriminate chemical spraying."}
+                </p>
+              </div>
+
+              <div className="survey-metric-card">
+                <span className="metric-number text-amber">75%</span>
+                <strong className="metric-label">
+                  {isHindi
+                    ? "वास्तविक मौसम व प्रारंभिक चेतावनी"
+                    : "Early Warning Weather Alerts"}
+                </strong>
+                <p className="metric-desc">
+                  {isHindi
+                    ? "बेमौसम बारिश, पाला व लू से बचाव के लिए 24-48 घंटे पहले स्थानीय स्तर पर चेतावनी की मांग।"
+                    : "Need hyperlocal advance alerts to protect standing crops against abrupt weather shocks."}
+                </p>
+              </div>
+
+              <div className="survey-metric-card">
+                <span className="metric-number text-purple">68%</span>
+                <strong className="metric-label">
+                  {isHindi
+                    ? "ड्रोन व आधुनिक तकनीक में रुचि"
+                    : "Willingness for Drone Spraying"}
+                </strong>
+                <p className="metric-desc">
+                  {isHindi
+                    ? "किफायती किराये या साझा सेवा मॉडल पर किसान ड्रोन आधारित निगरानी और छिड़काव अपनाने को तैयार।"
+                    : "Willing to adopt aerial drone spraying when offered via affordable community-rental models."}
+                </p>
+              </div>
+            </div>
+
+            {/* CTAs Bar */}
+            <div className="survey-cta-banner">
+              <div className="survey-cta-text">
+                <strong>
+                  {isHindi
+                    ? "विस्तृत सांख्यिकी और 15-प्रश्नों का संपूर्ण विश्लेषण देखें"
+                    : "Explore Comprehensive Visual Analytics & Survey Charts"}
+                </strong>
+                <span>
+                  {isHindi
+                    ? "इंटरैक्टिव चार्ट्स, फसल-वार वर्गीकरण और प्रतिक्रियाओं का पूरा विवरण लाइव डैशबोर्ड पर उपलब्ध है।"
+                    : "Access interactive charts, response breakdowns, and empirical data in our dedicated portal."}
+                </span>
+              </div>
+
+              <div className="survey-action-buttons">
+                <button
+                  type="button"
+                  onClick={onNavigateSurvey}
+                  className="btn-survey-primary"
+                >
+                  <BarChart3 size={18} />
+                  <span>
+                    {isHindi
+                      ? "सर्वेक्षण इनसाइट्स देखें"
+                      : "View Survey Insights"}
+                  </span>
+                  <ArrowRight size={16} />
+                </button>
+
+                <a
+                  href="http://localhost:5174"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-survey-secondary"
+                  title={
+                    isHindi
+                      ? "नया सर्वेक्षण फॉर्म भरें"
+                      : "Fill out survey form"
+                  }
+                >
+                  <ExternalLink size={16} />
+                  <span>
+                    {isHindi ? "सर्वेक्षण फॉर्म भरें" : "Take Field Survey"}
+                  </span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Section 6: Government Schemes & Policies */}
         <section id="gov-schemes" className="about-section-card">
           <div className="section-header-block">
             <div className="section-icon-badge green">
@@ -1087,6 +1254,12 @@ export default function AboutPage({
 
         {/* Section 8: Our Mission */}
         <section id="mission" className="about-mission-card">
+          <img
+            src={safeCropImg}
+            alt="Lush Indian Farming Field"
+            className="mission-bg-img"
+          />
+          <div className="mission-bg-overlay" />
           <div className="mission-content-box">
             <div className="mission-heart-badge">
               <HeartHandshake size={30} />

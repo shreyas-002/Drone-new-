@@ -26,11 +26,14 @@ import {
   PhoneCall,
   Bell,
   Smartphone,
+  MessageCircle,
   Users,
   Edit3,
   Trash2,
   Info,
   Video,
+  BarChart3,
+  Sparkles,
 } from "lucide-react";
 import logoImg from "../assets/logo.png";
 import FieldMap from "../components/FieldMap";
@@ -48,6 +51,7 @@ import {
   sendTestNotificationApi,
   updateFarmerPhoneApi,
   triggerClimateCheckApi,
+  simulateClimateShockApi,
   sendNotificationSmsApi,
   updateFieldApi,
   deleteFieldApi,
@@ -96,8 +100,11 @@ export default function SelectedFieldPage({
   const [isUpdatingPhone, setIsUpdatingPhone] = useState(false);
   const [isSendingTestNotif, setIsSendingTestNotif] = useState(false);
   const [isCheckingClimate, setIsCheckingClimate] = useState(false);
+  const [simulatingShock, setSimulatingShock] = useState(null);
   const [testNotifResult, setTestNotifResult] = useState(null);
   const [climateCheckResult, setClimateCheckResult] = useState(null);
+  const [sendingSmsId, setSendingSmsId] = useState(null);
+  const [sentSmsIds, setSentSmsIds] = useState({});
 
   // Edit & Delete Modal States
   const [showEditModal, setShowEditModal] = useState(false);
@@ -177,6 +184,9 @@ export default function SelectedFieldPage({
             ? notifs
             : [],
       );
+      if (notifs?.farmer_phone) {
+        setEditingPhone((prev) => prev || notifs.farmer_phone);
+      }
     } else {
       setNotifications([]);
     }
@@ -205,13 +215,17 @@ export default function SelectedFieldPage({
   const handleSendTestNotification = async () => {
     setIsSendingTestNotif(true);
     setTestNotifResult(null);
-    const res = await sendTestNotificationApi(currentFieldId);
+    const phoneToUse =
+      editingPhone && editingPhone.trim().length >= 8
+        ? editingPhone.trim()
+        : "+91 9876543210";
+    const res = await sendTestNotificationApi(phoneToUse);
     if (res?.status === "success") {
       setTestNotifResult({
         type: "success",
         msg: isHindi
-          ? `✓ परीक्षण संदेश भेजा गया (${res.details?.sms_status || "सफल"})`
-          : `✓ Test alert dispatched (${res.details?.sms_status || "Sent"})`,
+          ? `✓ परीक्षण संदेश भेजा गया (${res.channels?.SMS?.status || "सफल"})`
+          : `✓ Test alert dispatched successfully to ${phoneToUse}`,
       });
       await fetchNotifications();
     } else {
@@ -219,10 +233,35 @@ export default function SelectedFieldPage({
         type: "error",
         msg:
           res?.message ||
-          (isHindi ? "अलर्ट भेजने में विफल" : "Failed to dispatch alert"),
+          (isHindi
+            ? "अलर्ट भेजने में विफल"
+            : "Failed to dispatch test notification"),
       });
     }
     setIsSendingTestNotif(false);
+  };
+
+  const handleDirectSendSms = async (logItem) => {
+    if (sendingSmsId) return;
+    setSendingSmsId(logItem.id);
+    const phoneToUse =
+      logItem.recipient_phone ||
+      (editingPhone && editingPhone.trim().length >= 8
+        ? editingPhone.trim()
+        : "+91 9981087718");
+    const res = await sendTestNotificationApi(phoneToUse, ["SMS"]);
+    if (res?.status === "success") {
+      setSentSmsIds((prev) => ({ ...prev, [logItem.id]: true }));
+      setTimeout(() => {
+        setSentSmsIds((prev) => {
+          const next = { ...prev };
+          delete next[logItem.id];
+          return next;
+        });
+      }, 4000);
+      await fetchNotifications();
+    }
+    setSendingSmsId(null);
   };
 
   const handleTriggerClimateCheck = async () => {
@@ -246,6 +285,37 @@ export default function SelectedFieldPage({
       });
     }
     setIsCheckingClimate(false);
+  };
+
+  const handleSimulateShock = async (shockType) => {
+    setSimulatingShock(shockType);
+    setClimateCheckResult(null);
+    const phoneToUse =
+      editingPhone && editingPhone.trim().length >= 8
+        ? editingPhone.trim()
+        : "+91 9981087718";
+    const res = await simulateClimateShockApi(
+      shockType,
+      currentFieldId,
+      phoneToUse,
+    );
+    if (res?.status === "success") {
+      setClimateCheckResult({
+        type: "success",
+        msg: isHindi
+          ? `✓ सिमुलेशन सफल: ${shockType} का अलर्ट लाइव एसएमएस द्वारा भेजा गया!`
+          : `✓ Simulation Successful: Dispatched ${shockType} shock SMS to ${phoneToUse}!`,
+      });
+      await fetchNotifications();
+    } else {
+      setClimateCheckResult({
+        type: "error",
+        msg:
+          res?.message ||
+          (isHindi ? "सिमुलेशन अलर्ट विफल" : "Simulation dispatch failed"),
+      });
+    }
+    setSimulatingShock(null);
   };
 
   const handleEditFieldSave = async (updatedData) => {
@@ -293,6 +363,14 @@ export default function SelectedFieldPage({
           >
             <Users size={18} />
             <span>{isHindi ? "कृषि संवाद" : "Krishi Samvad"}</span>
+          </button>
+
+          <button
+            className="header-nav-btn"
+            onClick={() => onNavigateTab("survey")}
+          >
+            <BarChart3 size={18} />
+            <span>{isHindi ? "सर्वे परिणाम" : "Survey Results"}</span>
           </button>
 
           <button
@@ -948,6 +1026,107 @@ export default function SelectedFieldPage({
                   </div>
                 </div>
 
+                {/* Simulated Climate Shocks Test Toolbar */}
+                <div className="sim-shock-test-panel">
+                  <div className="sim-panel-header">
+                    <Sparkles size={16} className="text-amber" />
+                    <strong>
+                      {isHindi
+                        ? "डमी मौसम डेटा से टेस्ट करें (Simulate Climate Shocks):"
+                        : "Test with Simulated Dummy Weather Shocks:"}
+                    </strong>
+                    <span className="sim-badge">
+                      {isHindi ? "लाइव टेस्ट" : "Live Test"}
+                    </span>
+                  </div>
+                  <div className="sim-chips-container">
+                    <button
+                      type="button"
+                      onClick={() => handleSimulateShock("HEAVY_RAIN")}
+                      disabled={!!simulatingShock}
+                      className={`sim-chip-btn rain ${simulatingShock === "HEAVY_RAIN" ? "loading" : ""}`}
+                      title="Simulate 18.5mm heavy downpour"
+                    >
+                      🌧️{" "}
+                      {simulatingShock === "HEAVY_RAIN"
+                        ? isHindi
+                          ? "भेजा जा रहा है..."
+                          : "Sending..."
+                        : isHindi
+                          ? "भारी बारिश (18.5mm)"
+                          : "Heavy Rain (18.5mm)"}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleSimulateShock("HEATWAVE")}
+                      disabled={!!simulatingShock}
+                      className={`sim-chip-btn heat ${simulatingShock === "HEATWAVE" ? "loading" : ""}`}
+                      title="Simulate 41.5°C severe heatwave"
+                    >
+                      ☀️{" "}
+                      {simulatingShock === "HEATWAVE"
+                        ? isHindi
+                          ? "भेजा जा रहा है..."
+                          : "Sending..."
+                        : isHindi
+                          ? "अत्यधिक लू (41.5°C)"
+                          : "Heatwave (41.5°C)"}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleSimulateShock("FROST_WARNING")}
+                      disabled={!!simulatingShock}
+                      className={`sim-chip-btn frost ${simulatingShock === "FROST_WARNING" ? "loading" : ""}`}
+                      title="Simulate 1.8°C ground frost"
+                    >
+                      ❄️{" "}
+                      {simulatingShock === "FROST_WARNING"
+                        ? isHindi
+                          ? "भेजा जा रहा है..."
+                          : "Sending..."
+                        : isHindi
+                          ? "पाला (1.8°C)"
+                          : "Ground Frost (1.8°C)"}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleSimulateShock("FUNGAL_RISK")}
+                      disabled={!!simulatingShock}
+                      className={`sim-chip-btn fungal ${simulatingShock === "FUNGAL_RISK" ? "loading" : ""}`}
+                      title="Simulate 92% humidity microclimate"
+                    >
+                      🌫️{" "}
+                      {simulatingShock === "FUNGAL_RISK"
+                        ? isHindi
+                          ? "भेजा जा रहा है..."
+                          : "Sending..."
+                        : isHindi
+                          ? "फफूंद खतरा (92% नमी)"
+                          : "Fungal Risk (92% RH)"}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleSimulateShock("STORM_WIND")}
+                      disabled={!!simulatingShock}
+                      className={`sim-chip-btn storm ${simulatingShock === "STORM_WIND" ? "loading" : ""}`}
+                      title="Simulate 42 km/h gale winds"
+                    >
+                      💨{" "}
+                      {simulatingShock === "STORM_WIND"
+                        ? isHindi
+                          ? "भेजा जा रहा है..."
+                          : "Sending..."
+                        : isHindi
+                          ? "आंधी-तूफान (42 km/h)"
+                          : "Gale Storm (42 km/h)"}
+                    </button>
+                  </div>
+                </div>
+
                 {testNotifResult && (
                   <div
                     className={`notif-status-banner ${testNotifResult.type}`}
@@ -998,23 +1177,109 @@ export default function SelectedFieldPage({
                       {notifications.map((n) => (
                         <div key={n.id} className="notif-log-item">
                           <div className="notif-log-header">
-                            <span className="notif-type-tag">
-                              {n.alert_type}
+                            <div className="notif-header-left">
+                              <span
+                                className={`notif-type-tag ${String(n.alert_type || "test").toLowerCase()}`}
+                              >
+                                {n.alert_type === "DISEASE"
+                                  ? "⚠️ DISEASE"
+                                  : n.alert_type === "PEST"
+                                    ? "🐛 PEST"
+                                    : n.alert_type === "CLIMATE"
+                                      ? "⛈️ CLIMATE"
+                                      : "🔔 TEST"}
+                              </span>
+                              {n.recipient_phone && (
+                                <span className="notif-phone-badge">
+                                  {n.recipient_phone}
+                                </span>
+                              )}
+                            </div>
+                            <span className="notif-time-tag">
+                              {n.sent_at || n.created_at}
                             </span>
-                            <span className="notif-time-tag">{n.sent_at}</span>
                           </div>
-                          <p className="notif-message-text">
-                            {isHindi && n.message_hi
-                              ? n.message_hi
-                              : n.message_en}
-                          </p>
+
+                          <div className="notif-body">
+                            <p className="notif-message-text">
+                              {isHindi && n.message_hi
+                                ? n.message_hi
+                                : n.message_en ||
+                                  n.title ||
+                                  "Notification message dispatched."}
+                            </p>
+                          </div>
+
                           <div className="notif-channels-meta">
-                            <span>
-                              SMS Status: <strong>{n.sms_status}</strong>
-                            </span>
-                            <span>
-                              WhatsApp: <strong>{n.whatsapp_status}</strong>
-                            </span>
+                            <div className="channel-pill sms">
+                              <span className="pill-dot"></span>
+                              <span>SMS:</span>
+                              <strong>{n.sms_status || "Delivered"}</strong>
+                            </div>
+                            <div className="channel-pill whatsapp">
+                              <span className="pill-dot"></span>
+                              <span>WhatsApp:</span>
+                              <strong>
+                                {n.whatsapp_status || "Delivered"}
+                              </strong>
+                            </div>
+
+                            <div className="notif-direct-actions">
+                              <a
+                                href={`https://api.whatsapp.com/send?phone=${encodeURIComponent((n.recipient_phone || editingPhone || "").replace(/[^0-9]/g, ""))}&text=${encodeURIComponent(
+                                  (n.title ? `*${n.title}*\n\n` : "") +
+                                    (isHindi && n.message_hi
+                                      ? n.message_hi
+                                      : n.message_en || n.title || ""),
+                                )}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="direct-action-btn wa-direct-btn"
+                                title="Open WhatsApp chat with this message"
+                              >
+                                <MessageCircle size={14} />
+                                <span>
+                                  {isHindi
+                                    ? "व्हाट्सएप पर भेजें"
+                                    : "Send on WhatsApp"}
+                                </span>
+                              </a>
+
+                              <button
+                                onClick={() => handleDirectSendSms(n)}
+                                disabled={sendingSmsId === n.id}
+                                className={`direct-action-btn sms-direct-btn ${sentSmsIds[n.id] ? "sent" : ""}`}
+                                title="Send live SMS directly to mobile via SIM Gateway"
+                              >
+                                {sendingSmsId === n.id ? (
+                                  <>
+                                    <RefreshCw
+                                      size={13}
+                                      className="spin-icon"
+                                    />
+                                    <span>
+                                      {isHindi
+                                        ? "भेज रहे हैं..."
+                                        : "Sending..."}
+                                    </span>
+                                  </>
+                                ) : sentSmsIds[n.id] ? (
+                                  <>
+                                    <CheckCircle2 size={13} />
+                                    <span>
+                                      {isHindi ? "✓ भेजा गया!" : "✓ Sent!"}
+                                    </span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Smartphone size={14} />
+                                    <span>
+                                      {isHindi ? "एसएमएस भेजें" : "Send SMS"}
+                                    </span>
+                                  </>
+                                )}
+                              </button>
+                            </div>
                           </div>
                         </div>
                       ))}
