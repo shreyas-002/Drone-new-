@@ -570,7 +570,8 @@
    Section 4: Krishi Samvad Dedicated Showcase
    -------------------------------------------------------------------------- */
 .samvad-highlight-card {
-  background: linear-gradient(135deg, #f0fdf4 0%, #e8f9ee 100%);
+  background: linear-gradient(135deg, rgba(240, 253, 244, 0.92) 0%, rgba(232, 249, 238, 0.94) 100%),
+              url('../assets/krishi-samvad-bg.png') no-repeat center center / cover;
   border: 1.5px solid #bbf7d0;
   scroll-margin-top: 175px;
 }

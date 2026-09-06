@@ -40,6 +40,7 @@ import {
   BookOpen,
   Newspaper,
   Info,
+  BarChart3,
 } from "lucide-react";
 import logoImg from "../assets/logo.png";
 import {
@@ -69,6 +70,7 @@ export default function CommunityPage({
   onNavigateHome,
   onNavigateNews,
   onNavigateAbout,
+  onNavigateSurvey,
   language = "hi",
   onToggleLanguage,
   onLogout,
@@ -552,6 +554,11 @@ export default function CommunityPage({
           <button className="header-nav-btn active">
             <Users size={18} />
             <span>{isHindi ? "कृषि संवाद" : "Krishi Samvad"}</span>
+          </button>
+
+          <button className="header-nav-btn" onClick={onNavigateSurvey}>
+            <BarChart3 size={18} />
+            <span>{isHindi ? "सर्वे परिणाम" : "Survey Results"}</span>
           </button>
 
           <button className="header-nav-btn" onClick={onNavigateAbout}>
