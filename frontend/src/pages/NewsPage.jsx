@@ -18,6 +18,7 @@ import {
   RefreshCw,
   Sparkles,
   Info,
+  BarChart3,
 } from "lucide-react";
 import logoImg from "../assets/logo.png";
 import { getAllNewsApi, refreshDailyNewsApi } from "../services/api";
@@ -29,6 +30,7 @@ export default function NewsPage({
   onNavigateHome,
   onNavigateCommunity,
   onNavigateAbout,
+  onNavigateSurvey,
   language = "hi",
   onToggleLanguage,
   onLogout,
@@ -128,6 +130,11 @@ export default function NewsPage({
           <button className="header-nav-btn" onClick={onNavigateCommunity}>
             <Users size={18} />
             <span>{isHindi ? "कृषि संवाद" : "Krishi Samvad"}</span>
+          </button>
+
+          <button className="header-nav-btn" onClick={onNavigateSurvey}>
+            <BarChart3 size={18} />
+            <span>{isHindi ? "सर्वे परिणाम" : "Survey Results"}</span>
           </button>
 
           <button className="header-nav-btn" onClick={onNavigateAbout}>

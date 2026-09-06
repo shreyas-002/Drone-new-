@@ -27,6 +27,7 @@ import {
   Award,
   AlertCircle,
   TrendingUp,
+  BarChart3,
 } from "lucide-react";
 import logoImg from "../assets/logo.png";
 import farmerImg from "../assets/farmer.jpg";
@@ -35,6 +36,7 @@ import "../styles/AboutPage.css";
 export default function AboutPage({
   onNavigateHome,
   onNavigateCommunity,
+  onNavigateSurvey,
   language = "hi",
   onToggleLanguage,
   onLogout,
@@ -337,6 +339,11 @@ export default function AboutPage({
           <button className="header-nav-btn" onClick={onNavigateCommunity}>
             <Users size={18} />
             <span>{isHindi ? "कृषि संवाद" : "Krishi Samvad"}</span>
+          </button>
+
+          <button className="header-nav-btn" onClick={onNavigateSurvey}>
+            <BarChart3 size={18} />
+            <span>{isHindi ? "सर्वे परिणाम" : "Survey Results"}</span>
           </button>
 
           <button
