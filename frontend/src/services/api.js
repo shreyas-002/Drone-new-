@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:5000/api'
+const API_BASE_URL = 'http://localhost:5001/api'
 
 // Helper for local Auth Token storage
 export function getAuthToken() {
@@ -159,10 +159,29 @@ export async function getFieldAdviceApi(fieldId) {
   }
 }
 
-export async function getFieldDetectionsApi(fieldId) {
+export async function getFieldDetectionsApi(fieldId, limit = 25) {
   try {
-    const res = await fetch(`${API_BASE_URL}/fields/${fieldId}/detections`, {
+    const res = await fetch(`${API_BASE_URL}/fields/${fieldId}/detections?limit=${limit}`, {
       headers: getHeaders()
+    })
+    if (res.ok) {
+      return await res.json()
+    }
+    return null
+  } catch (err) {
+    return null
+  }
+}
+
+export async function analyzeFieldFrameApi(fieldId, formData, conf = 0.35) {
+  try {
+    const token = localStorage.getItem('farmhawk_token') || ''
+    const res = await fetch(`${API_BASE_URL}/fields/${fieldId}/live-feed/analyze?conf=${conf}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      body: formData
     })
     if (res.ok) {
       return await res.json()
@@ -178,6 +197,39 @@ export async function clearFieldDetectionsApi(fieldId) {
     const res = await fetch(`${API_BASE_URL}/fields/${fieldId}/detections`, {
       method: 'DELETE',
       headers: getHeaders()
+    })
+    if (res.ok) {
+      return await res.json()
+    }
+    return null
+  } catch (err) {
+    return null
+  }
+}
+
+export async function launchDesktopFeedApi(fieldId, camera = 1) {
+  try {
+    const token = localStorage.getItem('farmhawk_token') || ''
+    const res = await fetch(`${API_BASE_URL}/fields/${fieldId}/live-feed/launch-desktop?camera=${camera}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+    return await res.json()
+  } catch (err) {
+    return null
+  }
+}
+
+export async function testDatasetSampleApi(fieldId, sampleType = 'pest', conf = 0.25) {
+  try {
+    const token = localStorage.getItem('farmhawk_token') || ''
+    const res = await fetch(`${API_BASE_URL}/fields/${fieldId}/live-feed/test-sample?sample_type=${sampleType}&conf=${conf}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
     })
     if (res.ok) {
       return await res.json()

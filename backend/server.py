@@ -13,7 +13,8 @@ if sys.platform == "win32":
 from datetime import datetime
 from typing import List, Dict, Any, Optional
 
-from fastapi import FastAPI, HTTPException, Depends, status
+from fastapi import FastAPI, HTTPException, Depends, status, UploadFile, File
+from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
@@ -23,6 +24,7 @@ import uvicorn
 from database import engine, Base, get_db, SessionLocal
 import db_models
 import schemas
+from services.live_feed_service import generate_live_feed_stream, analyze_image_frame
 from auth import (
     hash_password,
     verify_password,
@@ -311,10 +313,11 @@ async def get_field_advice(
     }
 
 
-# --- Detection Endpoints ---
+# --- Detection & Live Feed Endpoints ---
 @app.get("/api/fields/{field_id}/detections")
 def get_field_detections(
     field_id: int,
+    limit: int = 25,
     current_farmer: db_models.Farmer = Depends(get_current_farmer),
     db: Session = Depends(get_db)
 ):
@@ -325,14 +328,104 @@ def get_field_detections(
     if field.farmer_id != current_farmer.id:
         raise HTTPException(status_code=403, detail="Access denied")
 
+    # Fetch max specified detections (default max 25, refreshable)
     detections = (
         db.query(db_models.Detection)
         .filter(db_models.Detection.field_id == field_id)
         .order_by(db_models.Detection.timestamp.desc())
-        .limit(100)
+        .limit(min(limit, 50))
         .all()
     )
     return {"detections": detections, "count": len(detections)}
+
+
+@app.get("/api/fields/{field_id}/live-feed/stream")
+def stream_field_live_feed(
+    field_id: int,
+    camera: int = 0,
+    conf: float = 0.35,
+    db: Session = Depends(get_db)
+):
+    """
+    Real-time MJPEG live camera stream using trained YOLO/CNN model.
+    Draws Blue boxes for Insects, Red boxes for Pests.
+    Persists detected threats directly into the database for this field.
+    """
+    field = db.query(db_models.Field).filter(db_models.Field.id == field_id).first()
+    if not field:
+        raise HTTPException(status_code=404, detail="Field not found")
+
+    return StreamingResponse(
+        generate_live_feed_stream(
+            field_id=field_id,
+            camera_idx=camera,
+            conf_thresh=conf,
+            db_session_factory=SessionLocal
+        ),
+        media_type="multipart/x-mixed-replace; boundary=frame"
+    )
+
+
+@app.post("/api/fields/{field_id}/live-feed/analyze")
+async def analyze_field_frame(
+    field_id: int,
+    file: UploadFile = File(...),
+    conf: float = 0.35,
+    db: Session = Depends(get_db)
+):
+    """
+    Runs YOLO CNN inference on a captured webcam frame or uploaded image.
+    Returns annotated frame (base64) and saves detections.
+    """
+    field = db.query(db_models.Field).filter(db_models.Field.id == field_id).first()
+    if not field:
+        raise HTTPException(status_code=404, detail="Field not found")
+
+    image_bytes = await file.read()
+    result = analyze_image_frame(
+        image_bytes=image_bytes,
+        field_id=field_id,
+        conf_thresh=conf,
+        db_session=db
+    )
+    return result
+
+
+@app.post("/api/fields/{field_id}/live-feed/launch-desktop")
+def launch_desktop_feed(
+    field_id: int,
+    camera: int = 1,
+):
+    """Launches the native OpenCV desktop live feed script using Apple Silicon MPS acceleration."""
+    import subprocess
+    script_path = "/Users/harshitkushwaha/.gemini/antigravity/scratch/crop-disease-pest-detector/webcam_feed.py"
+    python_bin = "/Users/harshitkushwaha/.gemini/antigravity/scratch/crop-disease-pest-detector/.venv/bin/python3"
+    subprocess.Popen([python_bin, script_path, "--camera", str(camera)])
+    return {"status": "success", "message": f"Desktop live feed window launched with camera {camera}"}
+
+
+@app.post("/api/fields/{field_id}/live-feed/test-sample")
+def test_dataset_sample(
+    field_id: int,
+    sample_type: str = "pest",
+    conf: float = 0.25,
+    db: Session = Depends(get_db),
+):
+    """Runs the trained YOLO model on an actual test image from combined_dataset/test/images."""
+    from pathlib import Path
+    test_dir = Path("/Users/harshitkushwaha/.gemini/antigravity/scratch/crop-disease-pest-detector/combined_dataset/test/images")
+    if sample_type == "insect":
+        img_path = test_dir / "ip102_00011_jpg.rf.38447cdca6e80556526e25cf3db69f31.jpg"
+    else:
+        img_path = test_dir / "plantdoc_02_-Rust-2017-207u24s_jpg.rf.87b84a77a849228fd3648aeeb0ebd06a.jpg"
+
+    if not img_path.exists():
+        raise HTTPException(status_code=404, detail="Sample image not found")
+
+    with open(img_path, "rb") as f:
+        img_bytes = f.read()
+
+    return analyze_image_frame(img_bytes, field_id=field_id, conf_thresh=conf, db_session=db)
 
 
 @app.post("/api/fields/{field_id}/detections")
@@ -463,6 +556,6 @@ def get_csv_logs():
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=5000)
+    uvicorn.run(app, host="0.0.0.0", port=5001)
 
 
