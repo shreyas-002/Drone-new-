@@ -37,9 +37,9 @@ def get_current_farmer(token: Optional[str] = Depends(oauth2_scheme), db: Sessio
         farmer = db.query(db_models.Farmer).filter(db_models.Farmer.email == "farmer1@farmhawk.com").first()
         if not farmer:
             farmer = db_models.Farmer(
-                name="Anant",
+                name="Farmer",
                 email="farmer1@farmhawk.com",
-                phone="+91 98765 43210",
+                phone="+91 9981087718",
                 password_hash=hash_password("password123")
             )
             db.add(farmer)

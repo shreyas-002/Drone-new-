@@ -176,6 +176,9 @@ class GatewayConfigRequest(BaseModel):
     TWILIO_PHONE_NUMBER: Optional[str] = ""
     TWILIO_WHATSAPP_NUMBER: Optional[str] = ""
     FAST2SMS_API_KEY: Optional[str] = ""
+    TEXTBEE_API_KEY: Optional[str] = ""
+    TEXTBEE_DEVICE_ID: Optional[str] = ""
+    ANDROID_GATEWAY_URL: Optional[str] = ""
 
 
 @router.get("/gateway-config")
@@ -191,8 +194,12 @@ def get_gateway_settings(
         "TWILIO_PHONE_NUMBER": cfg["TWILIO_PHONE_NUMBER"],
         "TWILIO_WHATSAPP_NUMBER": cfg["TWILIO_WHATSAPP_NUMBER"],
         "FAST2SMS_API_KEY": cfg["FAST2SMS_API_KEY"][:6] + "..." if cfg["FAST2SMS_API_KEY"] else "",
+        "TEXTBEE_API_KEY": cfg.get("TEXTBEE_API_KEY", "")[:6] + "..." if cfg.get("TEXTBEE_API_KEY") else "",
+        "TEXTBEE_DEVICE_ID": cfg.get("TEXTBEE_DEVICE_ID", ""),
+        "ANDROID_GATEWAY_URL": cfg.get("ANDROID_GATEWAY_URL", ""),
         "is_twilio_configured": bool(cfg["TWILIO_ACCOUNT_SID"] and cfg["TWILIO_AUTH_TOKEN"]),
         "is_fast2sms_configured": bool(cfg["FAST2SMS_API_KEY"]),
+        "is_textbee_configured": bool(cfg.get("TEXTBEE_API_KEY") and cfg.get("TEXTBEE_DEVICE_ID")),
     }
 
 
@@ -201,7 +208,7 @@ def save_gateway_settings(
     req: GatewayConfigRequest,
     current_farmer: db_models.Farmer = Depends(get_current_farmer)
 ):
-    """Save live gateway credentials for Twilio and Fast2SMS."""
+    """Save live gateway credentials for TextBee, Twilio and Fast2SMS."""
     from services.notification_service import set_gateway_config
     set_gateway_config(req.dict())
     return {"status": "success", "message": "Gateway credentials updated successfully"}

@@ -153,9 +153,9 @@ def login_farmer(login_in: schemas.FarmerLogin, db: Session = Depends(get_db)):
         if login_in.email == "farmer1@farmhawk.com" and login_in.password == "password123":
             if not farmer:
                 farmer = db_models.Farmer(
-                    name="Anant",
+                    name="Farmer",
                     email="farmer1@farmhawk.com",
-                    phone="+91 98765 43210",
+                    phone="+91 9981087718",
                     password_hash=hash_password("password123")
                 )
                 db.add(farmer)
@@ -422,7 +422,11 @@ def test_dataset_sample(
 ):
     """Runs the trained YOLO model on an actual test image from combined_dataset/test/images."""
     from pathlib import Path
-    test_dir = Path("/Users/harshitkushwaha/.gemini/antigravity/scratch/crop-disease-pest-detector/combined_dataset/test/images")
+    candidate_test_dirs = [
+        Path.home() / "Desktop/PlantPestModel/datasets/combined_dataset/test/images",
+        Path("/Users/harshitkushwaha/.gemini/antigravity/scratch/crop-disease-pest-detector/combined_dataset/test/images"),
+    ]
+    test_dir = next((d for d in candidate_test_dirs if d.exists()), candidate_test_dirs[0])
     if sample_type == "insect":
         img_path = test_dir / "ip102_00011_jpg.rf.38447cdca6e80556526e25cf3db69f31.jpg"
     else:

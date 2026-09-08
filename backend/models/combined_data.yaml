@@ -1,0 +1,79 @@
+path: /Users/harshitkushwaha/Desktop/PlantPestModel/datasets/combined_dataset
+train: train/images
+val: valid/images
+test: test/images
+nc: 35
+names:
+- Apple Scab Leaf
+- Apple leaf
+- Apple rust leaf
+- Bell_pepper leaf spot
+- Bell_pepper leaf
+- Blueberry leaf
+- Cherry leaf
+- Corn Gray leaf spot
+- Corn leaf blight
+- Corn rust leaf
+- Peach leaf
+- Potato leaf early blight
+- Potato leaf late blight
+- Potato leaf
+- Raspberry leaf
+- Soyabean leaf
+- Soybean leaf
+- Squash Powdery mildew leaf
+- Strawberry leaf
+- Tomato Early blight leaf
+- Tomato Septoria leaf spot
+- Tomato leaf bacterial spot
+- Tomato leaf late blight
+- Tomato leaf mosaic virus
+- Tomato leaf yellow virus
+- Tomato leaf
+- Tomato mold leaf
+- Tomato two spotted spider mites leaf
+- grape leaf black rot
+- grape leaf
+- bay leaf
+- legume blister beetle
+- lytta polita
+- rice leaf roller
+- tarnished plant bug
+category_indices:
+  disease_crop:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  - 15
+  - 16
+  - 17
+  - 18
+  - 19
+  - 20
+  - 21
+  - 22
+  - 23
+  - 24
+  - 25
+  - 26
+  - 27
+  - 28
+  - 29
+  pest:
+  - 30
+  - 31
+  - 32
+  - 33
+  - 34

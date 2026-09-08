@@ -64,7 +64,7 @@ export default function SelectedFieldPage({
   language = "hi",
   onToggleLanguage,
   onLogout,
-  farmerName = "Anant",
+  farmerName = "Farmer",
   initialTab = "data",
   onNavigateTab,
 }) {
@@ -218,7 +218,7 @@ export default function SelectedFieldPage({
     const phoneToUse =
       editingPhone && editingPhone.trim().length >= 8
         ? editingPhone.trim()
-        : "+91 9876543210";
+        : "+91 9981087718";
     const res = await sendTestNotificationApi(phoneToUse);
     if (res?.status === "success") {
       setTestNotifResult({

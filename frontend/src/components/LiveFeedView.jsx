@@ -17,14 +17,13 @@ import {
   Radio,
 } from "lucide-react";
 import {
+  API_BASE_URL,
   getFieldDetectionsApi,
   clearFieldDetectionsApi,
   analyzeFieldFrameApi,
   launchDesktopFeedApi,
   testDatasetSampleApi,
 } from "../services/api";
-
-const API_BASE_URL = "http://localhost:5001/api";
 
 export default function LiveFeedView({ field, isHindi = false }) {
   // Feed Engine: 'browser' (HTML5 WebCam + Live CNN Loop) or 'backend' (OpenCV MJPEG Stream)

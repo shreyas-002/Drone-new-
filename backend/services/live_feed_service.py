@@ -16,10 +16,33 @@ os.environ["YOLO_CONFIG_DIR"] = "/Users/harshitkushwaha/.gemini/antigravity/scra
 
 logger = logging.getLogger("live_feed_service")
 
-# Path constants for the trained model
+LOCAL_MODELS_DIR = Path(__file__).resolve().parent.parent / "models"
+DESKTOP_DETECTOR_DIR = Path.home() / "Desktop" / "PlantPestModel"
 BASE_DETECTOR_DIR = Path("/Users/harshitkushwaha/.gemini/antigravity/scratch/crop-disease-pest-detector")
-MODEL_PATH = BASE_DETECTOR_DIR / "best_model.pt"
-DATA_YAML_PATH = BASE_DETECTOR_DIR / "combined_dataset/combined_data.yaml"
+
+def get_resolved_model_path() -> Path:
+    candidates = [
+        LOCAL_MODELS_DIR / "best_model.pt",
+        DESKTOP_DETECTOR_DIR / "best_model.pt",
+        BASE_DETECTOR_DIR / "best_model.pt",
+        Path("best_model.pt"),
+        DESKTOP_DETECTOR_DIR / "models" / "best_model.pt",
+    ]
+    for c in candidates:
+        if c.exists():
+            return c
+    return Path("yolov8n.pt")
+
+def get_resolved_yaml_path() -> Path:
+    candidates = [
+        LOCAL_MODELS_DIR / "combined_data.yaml",
+        DESKTOP_DETECTOR_DIR / "datasets" / "combined_dataset" / "combined_data.yaml",
+        BASE_DETECTOR_DIR / "combined_dataset" / "combined_data.yaml",
+    ]
+    for c in candidates:
+        if c.exists():
+            return c
+    return BASE_DETECTOR_DIR / "combined_dataset/combined_data.yaml"
 
 # Visual Color Scheme:
 # OpenCV BGR Format:
@@ -45,17 +68,16 @@ def get_yolo_model():
     global _yolo_model, _model_names
     if _yolo_model is None:
         from ultralytics import YOLO
-        target_path = MODEL_PATH if MODEL_PATH.exists() else Path("best_model.pt")
-        if not target_path.exists():
-            target_path = Path("yolov8n.pt")
+        target_path = get_resolved_model_path()
         logger.info(f"Loading YOLO weights from: {target_path}")
         _yolo_model = YOLO(str(target_path))
         if hasattr(_yolo_model, "names") and _yolo_model.names:
             _model_names = _yolo_model.names
         else:
             # Fallback to YAML names
-            if DATA_YAML_PATH.exists():
-                with open(DATA_YAML_PATH, "r") as f:
+            yaml_path = get_resolved_yaml_path()
+            if yaml_path.exists():
+                with open(yaml_path, "r") as f:
                     yd = yaml.safe_load(f)
                     names = yd.get("names", {})
                     if isinstance(names, list):
@@ -317,6 +339,8 @@ def analyze_image_frame(
             det_obj = {
                 "detection_type": det_type,
                 "disease_or_pest_name": cls_name,
+                "class_name": cls_name,
+                "name": cls_name,
                 "confidence": round(confidence, 4),
                 "accuracy_pct": acc_pct,
                 "bbox": [int(x1), int(y1), int(x2), int(y2)],

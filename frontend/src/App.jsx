@@ -10,9 +10,18 @@ import CreateProfileModal from "./components/CreateProfileModal";
 import { loginUserApi } from "./services/api";
 
 export default function App() {
+  // Session-based Login Auth State
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    return sessionStorage.getItem("farmhawk_logged_in") === "true";
+  });
+
   // Page states: 'dashboard' | 'field' | 'community' | 'news' | 'about' | 'survey' | 'login'
+  // Defaults strictly to 'login' upon opening the link
   const [currentPage, setCurrentPage] = useState(() => {
-    return localStorage.getItem("farmhawk_current_page") || "dashboard";
+    const loggedIn = sessionStorage.getItem("farmhawk_logged_in") === "true";
+    if (!loggedIn) return "login";
+    const saved = sessionStorage.getItem("farmhawk_current_page");
+    return saved && saved !== "login" ? saved : "dashboard";
   });
 
   const [selectedFieldId, setSelectedFieldId] = useState(() => {
@@ -32,14 +41,22 @@ export default function App() {
     return localStorage.getItem("farmhawk_language") || "hi";
   });
 
-  // User Profile State with local storage persistence
+  // User Profile State with local storage persistence and Anant sanitization
   const [userProfile, setUserProfile] = useState(() => {
     const saved = localStorage.getItem("farmhawk_user_profile");
     if (saved) {
       try {
-        return JSON.parse(saved);
         const parsed = JSON.parse(saved);
         if (parsed && typeof parsed === "object") {
+          if (parsed.name && parsed.name.toLowerCase() === "anant") {
+            parsed.name = "";
+          }
+          if (parsed.location && parsed.location.toLowerCase().includes("ludhiana")) {
+            parsed.location = "";
+          }
+          if (parsed.pincode === "141001") {
+            parsed.pincode = "";
+          }
           return parsed;
         }
       } catch (e) {}
@@ -51,15 +68,16 @@ export default function App() {
       district: "",
       pincode: "",
       phone: "+91 9981087718",
-      phone: "",
       isCreated: false,
     };
   });
 
-  // Persist navigation & preferences to localStorage
+  // Persist navigation & preferences
   useEffect(() => {
-    localStorage.setItem("farmhawk_current_page", currentPage);
-  }, [currentPage]);
+    if (isLoggedIn) {
+      sessionStorage.setItem("farmhawk_current_page", currentPage);
+    }
+  }, [currentPage, isLoggedIn]);
 
   useEffect(() => {
     if (selectedFieldId !== null && selectedFieldId !== undefined) {
@@ -91,19 +109,60 @@ export default function App() {
   // Profile modal control
   const [showProfileModal, setShowProfileModal] = useState(false);
 
-  const handleLoginSuccess = async (loginData) => {
-    await loginUserApi(loginData.email, loginData.password);
+  const handleLoginSuccess = (loginData) => {
+    setIsLoggedIn(true);
+    sessionStorage.setItem("farmhawk_logged_in", "true");
     setCurrentPage("dashboard");
     setSelectedFieldId(null);
     setShowProfileModal(true);
+
+    if (loginData?.email) {
+      loginUserApi(loginData.email, loginData.password)
+        .then((res) => {
+          if (res?.farmer) {
+            setUserProfile((prev) => ({
+              ...prev,
+              name:
+                res.farmer.name &&
+                res.farmer.name.toLowerCase() !== "anant" &&
+                res.farmer.name.toLowerCase() !== "farmer"
+                  ? res.farmer.name
+                  : prev.name &&
+                    prev.name.toLowerCase() !== "anant" &&
+                    prev.name.toLowerCase() !== "farmer"
+                  ? prev.name
+                  : "",
+              phone: res.farmer.phone || prev.phone || "+91 9981087718",
+              location:
+                res.farmer.location_region &&
+                !res.farmer.location_region.toLowerCase().includes("ludhiana")
+                  ? res.farmer.location_region
+                  : prev.location || "",
+            }));
+          }
+        })
+        .catch(() => {});
+    }
   };
 
+  // Auto popup Create Profile modal upon entering dashboard if profile is not yet created
+  useEffect(() => {
+    if (isLoggedIn && currentPage === "dashboard" && !userProfile.isCreated) {
+      setShowProfileModal(true);
+    }
+  }, [isLoggedIn, currentPage, userProfile.isCreated]);
+
   const handleSaveProfile = async (newProfile) => {
-    setUserProfile(newProfile);
+    setUserProfile({ ...newProfile, isCreated: true });
     setShowProfileModal(false);
   };
 
   const handleLogout = () => {
+    setIsLoggedIn(false);
+    sessionStorage.removeItem("farmhawk_logged_in");
+    sessionStorage.removeItem("farmhawk_current_page");
+    localStorage.removeItem("farmhawk_current_page");
+    localStorage.removeItem("farmhawk_token");
     setCurrentPage("login");
     setSelectedFieldId(null);
     localStorage.removeItem("farmhawk_selected_field_id");
@@ -155,7 +214,7 @@ export default function App() {
 
   return (
     <div className="app-root">
-      {currentPage === "login" ? (
+      {!isLoggedIn || currentPage === "login" ? (
         <LoginPage
           onLoginSuccess={handleLoginSuccess}
           language={language}
