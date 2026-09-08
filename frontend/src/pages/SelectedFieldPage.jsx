@@ -31,12 +31,14 @@ import {
   Edit3,
   Trash2,
   Info,
+  Video,
   BarChart3,
   Sparkles,
 } from "lucide-react";
 import logoImg from "../assets/logo.png";
 import FieldMap from "../components/FieldMap";
 import EditFieldModal from "../components/EditFieldModal";
+import LiveFeedView from "../components/LiveFeedView";
 import { translateProfileText } from "../utils/transliterate";
 import {
   getFarmerFieldsApi,
@@ -62,7 +64,7 @@ export default function SelectedFieldPage({
   language = "hi",
   onToggleLanguage,
   onLogout,
-  farmerName = "Anant",
+  farmerName = "Farmer",
   initialTab = "data",
   onNavigateTab,
 }) {
@@ -216,7 +218,7 @@ export default function SelectedFieldPage({
     const phoneToUse =
       editingPhone && editingPhone.trim().length >= 8
         ? editingPhone.trim()
-        : "+91 9876543210";
+        : "+91 9981087718";
     const res = await sendTestNotificationApi(phoneToUse);
     if (res?.status === "success") {
       setTestNotifResult({
@@ -455,6 +457,14 @@ export default function SelectedFieldPage({
           </button>
 
           <button
+            className={`subtopic-tab-btn ${activeTab === "livefeed" ? "active" : ""}`}
+            onClick={() => setActiveTab("livefeed")}
+          >
+            <Video size={18} />
+            <span>{isHindi ? "लाइव फीड" : "Live Feed"}</span>
+          </button>
+
+          <button
             className={`subtopic-tab-btn ${activeTab === "advice" ? "active" : ""}`}
             onClick={() => setActiveTab("advice")}
           >
@@ -597,7 +607,14 @@ export default function SelectedFieldPage({
             </div>
           )}
 
-          {/* SUB-TOPIC 2 — फसल सलाह एवं अलर्ट */}
+          {/* SUB-TOPIC 2 — लाइव फीड (CNN Model Live Detection) */}
+          {activeTab === "livefeed" && (
+            <div className="tab-content-container fade-in">
+              <LiveFeedView field={field} isHindi={isHindi} />
+            </div>
+          )}
+
+          {/* SUB-TOPIC 3 — फसल सलाह एवं अलर्ट */}
           {activeTab === "advice" && (
             <div className="tab-content-container fade-in">
               <div className="advice-section-card">

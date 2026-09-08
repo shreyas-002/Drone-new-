@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { surveyQuestions } from "./data/surveyQuestions";
 
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5001/api";
 
 const initialAnswers = {
   crops: [],
@@ -273,8 +273,8 @@ export default function App() {
       {/* Header */}
       <header className="app-header">
         <div className="brand-container">
-          <div className="brand-logo">
-            <Sprout size={26} />
+          <div className="brand-logo" style={{ background: "transparent" }}>
+            <img src="/logo.png" alt="FarmHawk Logo" style={{ height: "42px", borderRadius: "6px" }} />
           </div>
           <div className="brand-info">
             <h1>FarmHawk</h1>

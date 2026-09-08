@@ -87,17 +87,26 @@ export default function DashboardPage({
           ? droneImg
           : farmerImg;
 
-  const displayName = userProfile?.name
-    ? translateProfileText(userProfile.name, language)
-    : isHindi
-      ? "अनंत"
-      : "Anant";
+  const displayName =
+    userProfile?.name && userProfile.name.toLowerCase() !== "anant"
+      ? translateProfileText(userProfile.name, language)
+      : isHindi
+        ? "किसान"
+        : "Farmer";
 
-  const rawLocation = userProfile?.location || "Ludhiana, Punjab";
-  const displayLocation =
-    translateProfileText(rawLocation, language) ||
-    (isHindi ? "लुधियाना, पंजाब" : "Ludhiana, Punjab");
-  const displayPincode = userProfile?.pincode || "141001";
+  const rawLocation =
+    userProfile?.location && !userProfile.location.toLowerCase().includes("ludhiana")
+      ? userProfile.location
+      : "";
+  const displayLocation = rawLocation
+    ? translateProfileText(rawLocation, language) || rawLocation
+    : isHindi
+      ? "स्थान दर्ज नहीं"
+      : "Not Set";
+  const displayPincode =
+    userProfile?.pincode && userProfile.pincode !== "141001"
+      ? userProfile.pincode
+      : "—";
 
   // Load registered fields on mount
   useEffect(() => {
@@ -239,7 +248,7 @@ export default function DashboardPage({
                 <Phone size={12} /> {isHindi ? "संपर्क नंबर" : "Contact Number"}
               </span>
               <span className="profile-detail-value">
-                {userProfile?.phone || "+91 98765 43210"}
+                {userProfile?.phone || "+91 9981087718"}
               </span>
             </div>
           </div>

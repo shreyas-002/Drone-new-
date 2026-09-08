@@ -31,7 +31,7 @@ export default function LoginPage({ onLoginSuccess, language = 'hi', onToggleLan
     setTimeout(() => {
       setIsLoading(false)
       if (onLoginSuccess) {
-        onLoginSuccess({ email, role: 'Farmer User' })
+        onLoginSuccess({ email, password, role: 'Farmer User' })
       }
     }, 600)
   }

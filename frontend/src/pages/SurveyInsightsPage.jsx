@@ -15,6 +15,7 @@ import {
   Quote,
   CheckCircle2,
   ExternalLink,
+  RefreshCw,
 } from "lucide-react";
 import {
   PieChart,
@@ -31,7 +32,8 @@ import {
 import logoImg from "../assets/logo.png";
 import "../styles/SurveyInsightsPage.css";
 
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5001/api";
+const SURVEY_URL = import.meta.env.VITE_SURVEY_URL || "http://localhost:5174";
 
 const CHART_COLORS = [
   "#15803d",
@@ -156,41 +158,41 @@ export default function SurveyInsightsPage({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchStats = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const res = await fetch(`${API_BASE_URL}/survey/stats`);
-        if (!res.ok) {
-          throw new Error(`Server returned status ${res.status}`);
-        }
-        const data = await res.json();
-        if (isMounted) {
-          setStats(data);
-        }
-      } catch (err) {
-        console.error("Error fetching survey stats:", err);
-        if (isMounted) {
-          setError(
-            isHindi
-              ? "सर्वेक्षण आंकड़े लोड करने में असमर्थ। कृपया बाद में प्रयास करें।"
-              : "Unable to load survey statistics. Please try again later."
-          );
-        }
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
+  const fetchStats = async (showLoading = true) => {
+    try {
+      if (showLoading) setLoading(true);
+      setError(null);
+      const res = await fetch(`${API_BASE_URL}/survey/stats`);
+      if (!res.ok) {
+        throw new Error(`Server returned status ${res.status}`);
       }
-    };
+      const data = await res.json();
+      setStats(data);
+    } catch (err) {
+      console.error("Error fetching survey stats:", err);
+      setError(
+        isHindi
+          ? "सर्वेक्षण आंकड़े लोड करने में असमर्थ। कृपया बाद में प्रयास करें।"
+          : "Unable to load survey statistics. Please try again later."
+      );
+    } finally {
+      if (showLoading) setLoading(false);
+    }
+  };
 
-    fetchStats();
+  useEffect(() => {
+    fetchStats(true);
+
+    // Auto-update stats in real-time when user switches back to this tab after completing survey
+    const onFocus = () => fetchStats(false);
+    window.addEventListener("focus", onFocus);
+
+    // Live background polling every 10 seconds
+    const intervalTimer = setInterval(() => fetchStats(false), 10000);
 
     return () => {
-      isMounted = false;
+      window.removeEventListener("focus", onFocus);
+      clearInterval(intervalTimer);
     };
   }, [isHindi]);
 
@@ -312,10 +314,28 @@ export default function SurveyInsightsPage({
           <div className="survey-response-count">
             <span>{isHindi ? "कुल प्रतिक्रियाएँ:" : "Total Responses:"}</span>
             <span className="count-number">{totalResponses}</span>
+            <button
+              onClick={() => fetchStats(true)}
+              className="survey-refresh-icon-btn"
+              title={isHindi ? "आंकड़े ताज़ा करें" : "Refresh survey statistics"}
+              style={{
+                background: "transparent",
+                border: "none",
+                color: "#86efac",
+                cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                marginLeft: "8px",
+                padding: "2px",
+              }}
+            >
+              <RefreshCw size={15} className={loading ? "spin-icon" : ""} />
+            </button>
           </div>
 
           <a
             href="http://localhost:5174"
+            href={SURVEY_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="take-survey-btn"

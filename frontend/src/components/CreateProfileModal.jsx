@@ -26,13 +26,25 @@ export default function CreateProfileModal({
 }) {
   const isHindi = language === "hi";
 
-  const [name, setName] = useState(initialProfile?.name || "");
+  const [name, setName] = useState(
+    initialProfile?.name &&
+      initialProfile.name.toLowerCase() !== "anant" &&
+      initialProfile.name.toLowerCase() !== "farmer"
+      ? initialProfile.name
+      : "",
+  );
   const [selectedState, setSelectedState] = useState(
     initialProfile?.state || "",
   );
   const [district, setDistrict] = useState(initialProfile?.district || "");
-  const [pincode, setPincode] = useState(initialProfile?.pincode || "");
-  const [phone, setPhone] = useState(initialProfile?.phone || "");
+  const [pincode, setPincode] = useState(
+    initialProfile?.pincode && initialProfile.pincode !== "141001"
+      ? initialProfile.pincode
+      : "",
+  );
+  const [phone, setPhone] = useState(
+    initialProfile?.phone || "+91 9981087718",
+  );
 
   const [isSearchingPincode, setIsSearchingPincode] = useState(false);
   const [pincodeStatus, setPincodeStatus] = useState("");
@@ -235,8 +247,6 @@ export default function CreateProfileModal({
                 isHindi
                   ? "मोबाइल नंबर (उदा. +91 9981087718)"
                   : "Mobile number (e.g. +91 9981087718)"
-                  ? "अपना मोबाइल नंबर दर्ज करें"
-                  : "Enter your mobile number"
               }
               value={phone}
               onChange={(e) => setPhone(e.target.value)}

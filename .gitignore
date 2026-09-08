@@ -1,4 +1,4 @@
-﻿# Dependencies
+# Dependencies
 node_modules/
 */node_modules/
 
@@ -17,6 +17,11 @@ __pycache__/
 *$py.class
 .pytest_cache/
 .coverage
+
+# Environment Variables
+.env
+*.env
+*.env.local
 
 # Frontend Builds
 dist/

@@ -1,4 +1,6 @@
 import os
+import ssl
+import certifi
 import urllib.parse
 import urllib.request
 import json
@@ -20,7 +22,6 @@ def get_gateway_config() -> Dict[str, str]:
         "TWILIO_PHONE_NUMBER": os.getenv("TWILIO_PHONE_NUMBER", ""),
         "TWILIO_WHATSAPP_NUMBER": os.getenv("TWILIO_WHATSAPP_NUMBER", ""),
         "FAST2SMS_API_KEY": os.getenv("FAST2SMS_API_KEY", ""),
-        "TWOFACTOR_API_KEY": os.getenv("TWOFACTOR_API_KEY", "38f42fd1-a6eb-11f1-9cb1-0200cd936042"),
         "ANDROID_GATEWAY_URL": os.getenv("ANDROID_GATEWAY_URL", ""),
         "TEXTBEE_API_KEY": os.getenv("TEXTBEE_API_KEY", "txb_5cxpW9A3RurGBKTI5nyabOLxhYLnYiin"),
         "TEXTBEE_DEVICE_ID": os.getenv("TEXTBEE_DEVICE_ID", "6a985411ccb6c72709ba59ae"),
@@ -160,7 +161,8 @@ def send_sms_via_provider(phone: str, combined_text: str) -> Tuple[str, str]:
                 "msg": combined_text
             }).encode("utf-8")
             req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"}, method="POST")
-            with urllib.request.urlopen(req, timeout=5) as resp:
+            ctx = ssl.create_default_context(cafile=certifi.where())
+            with urllib.request.urlopen(req, context=ctx, timeout=5) as resp:
                 print(f"📱 [ANDROID SIM SMS SENT] To: {clean_num}\nText: {combined_text}")
                 return "SENT", f"android_sim_{int(datetime.now().timestamp())}"
         except Exception as e:
@@ -170,7 +172,11 @@ def send_sms_via_provider(phone: str, combined_text: str) -> Tuple[str, str]:
     if textbee_key and textbee_dev:
         try:
             url = f"https://api.textbee.dev/api/v1/gateway/devices/{textbee_dev}/sendSMS"
-            clean_num = phone.replace(" ", "").strip()
+            clean_num = phone.replace(" ", "").replace("-", "").strip()
+            if len(clean_num) == 10 and clean_num.isdigit():
+                clean_num = f"+91{clean_num}"
+            elif clean_num.startswith("91") and len(clean_num) == 12 and clean_num.isdigit():
+                clean_num = f"+{clean_num}"
             data = json.dumps({
                 "recipients": [clean_num],
                 "message": combined_text
@@ -181,51 +187,58 @@ def send_sms_via_provider(phone: str, combined_text: str) -> Tuple[str, str]:
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
             }
             req = urllib.request.Request(url, data=data, headers=headers, method="POST")
-            with urllib.request.urlopen(req, timeout=10) as resp:
+            ctx = ssl.create_default_context(cafile=certifi.where())
+            with urllib.request.urlopen(req, context=ctx, timeout=10) as resp:
                 res_data = json.loads(resp.read().decode("utf-8"))
                 print(f"📱 [TEXTBEE SIM SMS SENT] To: {clean_num}\nMessage: {combined_text}")
                 return "SENT", f"textbee_{res_data.get('data', {}).get('smsBatchId', 'ok')}"
+        except urllib.error.HTTPError as e:
+            try:
+                err_body = e.read().decode("utf-8")
+            except Exception:
+                err_body = str(e)
+            print(f"TextBee HTTP Error {e.code}: {err_body}")
+            if e.code == 429:
+                print("⚠️ TextBee 50 daily SMS limit reached on this free account.")
+                return "FAILED_DAILY_LIMIT", "textbee_daily_limit_reached"
         except Exception as e:
             print(f"TextBee Error: {e}")
 
-    # 3. 2Factor.in Cellular Gateway
-    if twofactor_key:
-        try:
-            clean_num = phone.replace("+91", "").replace(" ", "").replace("-", "").strip()
-            # 2Factor Pure SMS Route (Voice fallback disabled)
-            url_2f = f"https://2factor.in/API/V1/{twofactor_key}/SMS/{clean_num}/AUTOGEN2/FarmHawkAlert"
-            req_2f = urllib.request.Request(url_2f)
-            with urllib.request.urlopen(req_2f, timeout=10) as resp_2f:
-                res_2f = json.loads(resp_2f.read().decode("utf-8"))
-                if res_2f.get("Status") == "Success":
-                    print(f"✅ [2FACTOR LIVE SMS DELIVERED] To: {clean_num} Session: {res_2f.get('Details')}")
-                    return "SENT", f"2factor_{res_2f.get('Details')}"
-        except Exception as e:
-            print(f"2Factor SMS Error: {e}")
-
-    # 2. Twilio SMS
+    # 3. Twilio SMS
     if sid and token and num:
         try:
-            import base64
-            url = f"https://api.twilio.com/2010-04-01/Accounts/{sid}/Messages.json"
-            data = urllib.parse.urlencode({
-                "To": phone,
-                "From": num,
-                "Body": combined_text[:1590]
-            }).encode("utf-8")
+            try:
+                from twilio.rest import Client
+                tw_client = Client(sid, token)
+                msg = tw_client.messages.create(
+                    to=phone,
+                    from_=num,
+                    body=combined_text[:1590]
+                )
+                print(f"✅ [TWILIO SMS SENT] To: {phone} SID: {msg.sid}")
+                return "SENT", msg.sid
+            except ImportError:
+                import base64
+                url = f"https://api.twilio.com/2010-04-01/Accounts/{sid}/Messages.json"
+                data = urllib.parse.urlencode({
+                    "To": phone,
+                    "From": num,
+                    "Body": combined_text[:1590]
+                }).encode("utf-8")
 
-            req = urllib.request.Request(url, data=data, method="POST")
-            auth_str = f"{sid}:{token}"
-            auth_b64 = base64.b64encode(auth_str.encode("utf-8")).decode("utf-8")
-            req.add_header("Authorization", f"Basic {auth_b64}")
+                req = urllib.request.Request(url, data=data, method="POST")
+                auth_str = f"{sid}:{token}"
+                auth_b64 = base64.b64encode(auth_str.encode("utf-8")).decode("utf-8")
+                req.add_header("Authorization", f"Basic {auth_b64}")
 
-            with urllib.request.urlopen(req, timeout=10) as resp:
-                res_data = json.loads(resp.read().decode("utf-8"))
-                return "SENT", res_data.get("sid", "twilio_sms_ok")
+                ctx = ssl.create_default_context(cafile=certifi.where())
+                with urllib.request.urlopen(req, context=ctx, timeout=10) as resp:
+                    res_data = json.loads(resp.read().decode("utf-8"))
+                    return "SENT", res_data.get("sid", "twilio_sms_ok")
         except Exception as e:
             print(f"Twilio SMS Error: {e}")
 
-    # 2. Fast2SMS India Gateway (if key provided)
+    # 5. Fast2SMS India Gateway (if key provided)
     if fast2sms_key:
         try:
             url = "https://www.fast2sms.com/dev/bulkV2"
@@ -237,13 +250,14 @@ def send_sms_via_provider(phone: str, combined_text: str) -> Tuple[str, str]:
                 "route": "q"
             }).encode("utf-8")
             req = urllib.request.Request(url, data=data, method="POST")
-            with urllib.request.urlopen(req, timeout=10) as resp:
+            ctx = ssl.create_default_context(cafile=certifi.where())
+            with urllib.request.urlopen(req, context=ctx, timeout=10) as resp:
                 res_data = json.loads(resp.read().decode("utf-8"))
                 return "SENT", str(res_data.get("request_id", "fast2sms_ok"))
         except Exception as e:
             print(f"Fast2SMS Error: {e}")
 
-    # 3. Built-in Verifiable Simulator
+    # 6. Built-in Verifiable Simulator
     print(f"📱 [AUTOMATED SMS DISPATCHED] To: {phone}\n{combined_text}\n" + "="*50)
     return "SENT", f"sim_sms_{int(datetime.now().timestamp())}"
 
@@ -257,25 +271,36 @@ def send_whatsapp_via_provider(phone: str, combined_text: str) -> Tuple[str, str
 
     if sid and token and wa_num:
         try:
-            import base64
-            url = f"https://api.twilio.com/2010-04-01/Accounts/{sid}/Messages.json"
             to_wa = phone if phone.startswith("whatsapp:") else f"whatsapp:{phone.replace(' ', '')}"
             from_wa = wa_num if wa_num.startswith("whatsapp:") else f"whatsapp:{wa_num.replace(' ', '')}"
+            try:
+                from twilio.rest import Client
+                tw_client = Client(sid, token)
+                msg = tw_client.messages.create(
+                    to=to_wa,
+                    from_=from_wa,
+                    body=combined_text[:1590]
+                )
+                print(f"✅ [TWILIO WHATSAPP SENT] To: {to_wa} SID: {msg.sid}")
+                return "SENT", msg.sid
+            except ImportError:
+                import base64
+                url = f"https://api.twilio.com/2010-04-01/Accounts/{sid}/Messages.json"
+                data = urllib.parse.urlencode({
+                    "To": to_wa,
+                    "From": from_wa,
+                    "Body": combined_text[:1590]
+                }).encode("utf-8")
 
-            data = urllib.parse.urlencode({
-                "To": to_wa,
-                "From": from_wa,
-                "Body": combined_text[:1590]
-            }).encode("utf-8")
+                req = urllib.request.Request(url, data=data, method="POST")
+                auth_str = f"{sid}:{token}"
+                auth_b64 = base64.b64encode(auth_str.encode("utf-8")).decode("utf-8")
+                req.add_header("Authorization", f"Basic {auth_b64}")
 
-            req = urllib.request.Request(url, data=data, method="POST")
-            auth_str = f"{sid}:{token}"
-            auth_b64 = base64.b64encode(auth_str.encode("utf-8")).decode("utf-8")
-            req.add_header("Authorization", f"Basic {auth_b64}")
-
-            with urllib.request.urlopen(req, timeout=10) as resp:
-                res_data = json.loads(resp.read().decode("utf-8"))
-                return "SENT", res_data.get("sid", "twilio_wa_ok")
+                ctx = ssl.create_default_context(cafile=certifi.where())
+                with urllib.request.urlopen(req, context=ctx, timeout=10) as resp:
+                    res_data = json.loads(resp.read().decode("utf-8"))
+                    return "SENT", res_data.get("sid", "twilio_wa_ok")
         except Exception as e:
             print(f"Twilio WhatsApp Error: {e}")
 
