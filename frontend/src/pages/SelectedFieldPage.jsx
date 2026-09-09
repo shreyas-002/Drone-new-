@@ -249,7 +249,10 @@ export default function SelectedFieldPage({
       (editingPhone && editingPhone.trim().length >= 8
         ? editingPhone.trim()
         : "+91 9981087718");
-    const res = await sendTestNotificationApi(phoneToUse, ["SMS"]);
+    let res = await sendNotificationSmsApi(logItem.id);
+    if (!res || res.status !== "success") {
+      res = await sendTestNotificationApi(phoneToUse, ["SMS"]);
+    }
     if (res?.status === "success") {
       setSentSmsIds((prev) => ({ ...prev, [logItem.id]: true }));
       setTimeout(() => {

@@ -184,7 +184,7 @@ def send_sms_via_provider(phone: str, combined_text: str) -> Tuple[str, str]:
             headers = {
                 "x-api-key": textbee_key,
                 "Content-Type": "application/json",
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
             }
             req = urllib.request.Request(url, data=data, headers=headers, method="POST")
             ctx = ssl.create_default_context(cafile=certifi.where())
@@ -326,7 +326,7 @@ def dispatch_bilingual_notification(
     """
     phone = (farmer.phone or "").strip()
     if not phone:
-        phone = "+91 9876543210"
+        phone = "+91 9981087718"
 
     cooldown_key = f"{farmer.id}_{alert_type}_{field_id or 'all'}_{title}"
     now_ts = datetime.now().timestamp()

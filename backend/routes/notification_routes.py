@@ -59,7 +59,7 @@ def get_farmer_notifications(
             for log in logs
         ],
         "total": len(logs),
-        "farmer_phone": current_farmer.phone or "+91 9876543210"
+        "farmer_phone": current_farmer.phone or "+91 9981087718"
     }
 
 
@@ -74,7 +74,7 @@ def send_test_notification(
         current_farmer.phone = req.phone
         db.commit()
 
-    phone = current_farmer.phone or req.phone or "+91 9876543210"
+    phone = current_farmer.phone or req.phone or "+91 9981087718"
     title, msg_en, msg_hi = format_test_alert(current_farmer.name, phone)
 
     result = dispatch_bilingual_notification(
